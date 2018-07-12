@@ -1,12 +1,35 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    <f:entry title="${%Name}" field="iothub">
-        <f:textbox />
-    </f:entry>
-    <f:advanced>
-        <f:entry title="${%French}" field="useFrench"
-                 description="${%FrenchDescr}">
-            <f:checkbox />
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+    <f:section title="${%Module_Configuration}">
+        <f:entry title="${%Module_File_Path}" field="moduleFilePath">
+            <f:textbox />
         </f:entry>
+    </f:section>
+
+    <f:section title="${%Docker_Configuration}">
+        <f:radioBlock name="dockerRegistryType" value="acr" inline="true" title="${%Docker_Registry_ACR}"
+                              checked="${ instance.getDockerRegistryType()==null || instance.getDockerRegistryType() == 'acr'}"
+                              help="/${descriptor.descriptorUrl}/help/publishViaFile">
+            <f:entry title="${%Azure_Credentials}" field="azureCredentialsId">
+                <c:select expressionAllowed="false"/>
+            </f:entry>
+            <f:entry title="${%Resource_Group_Name}" field="resourceGroup">
+                <f:select/>
+            </f:entry>
+            <f:entry title="${%ACR_Name}" field="acrName">
+                <f:select/>
+            </f:entry>
+        </f:radioBlock>
+
+        <f:radioBlock name="dockerRegistryType" value="common" inline="true" title="${%Docker_Registry_Common}"
+                                      checked="${ instance.getDockerRegistryType()==null || instance.getDockerRegistryType() == 'common'}"
+                                      help="/${descriptor.descriptorUrl}/help/publishViaFile">
+            <f:entry field="dockerRegistryEndpoint">
+                <f:property propertyDescriptor="${descriptor.dockerRegistryEndpointDescriptor}"/>
+            </f:entry>
+        </f:radioBlock>
+    </f:section>
+
+    <f:advanced>
     </f:advanced>
 </j:jelly>
