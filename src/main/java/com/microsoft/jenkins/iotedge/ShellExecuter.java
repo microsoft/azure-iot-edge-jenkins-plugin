@@ -19,6 +19,12 @@ import java.io.PrintStream;
 public class ShellExecuter {
 
     public PrintStream logger;
+    public File workspace;
+
+    public ShellExecuter(PrintStream logger, File workspace) {
+        this.logger = logger;
+        this.workspace = workspace;
+    }
 
     public ShellExecuter(PrintStream logger) {
         this.logger = logger;
@@ -79,12 +85,9 @@ public class ShellExecuter {
         int exitCode = -1;
         try {
             if (File.pathSeparatorChar == ':') {
-                p = new ProcessBuilder(
-                        "/bin/sh",
-                        "-c",
-                        command).start();
+                p = Runtime.getRuntime().exec("/bin/sh -c \"" + command + "\"", null, workspace);
             } else {
-                p = Runtime.getRuntime().exec("cmd.exe /c \"" + command + "\"");
+                p = Runtime.getRuntime().exec("cmd.exe /c \"" + command + "\"", null, workspace);
             }
             p.waitFor();
 

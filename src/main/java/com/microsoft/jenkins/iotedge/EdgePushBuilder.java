@@ -38,8 +38,10 @@ import org.kohsuke.stapler.QueryParameter;
 import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
 
 import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import jenkins.tasks.SimpleBuildStep;
@@ -129,19 +131,20 @@ public class EdgePushBuilder extends BaseBuilder {
                 listener.getLogger().println(password);
             }
         }
-
-        PrintWriter writer = new PrintWriter(Constants.IOTEDGEDEV_ENV_FILENAME, "UTF-8");
+        listener.getLogger().println(workspace.getRemote());
+        PrintWriter writer = new PrintWriter(Paths.get(workspace.getRemote(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "UTF-8");
         writer.println(Env.EnvString);
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\""+url+"\"");
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\""+username+"\"");
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\""+password+"\"");
         writer.close();
 
-        ShellExecuter executer = new ShellExecuter(listener.getLogger());
+        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));
         try {
             executer.executeAZ("iotedgedev push", true);
         } catch (AzureCloudException e) {
             e.printStackTrace();
+            listener.getLogger().println(e.getMessage());
             run.setResult(Result.FAILURE);
         }
     }
