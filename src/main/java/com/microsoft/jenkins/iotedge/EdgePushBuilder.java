@@ -1,10 +1,7 @@
 package com.microsoft.jenkins.iotedge;
 
-import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
-import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.containerregistry.AccessKeyType;
 import com.microsoft.azure.management.containerregistry.Registries;
@@ -12,7 +9,6 @@ import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.containerregistry.RegistryCredentials;
 import com.microsoft.azure.management.containerregistry.implementation.ContainerRegistryManager;
 import com.microsoft.azure.management.containerregistry.implementation.RegistryImpl;
-import com.microsoft.azure.management.resources.ResourceGroup;
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
@@ -21,16 +17,11 @@ import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.model.*;
-import hudson.security.ACL;
-import hudson.tasks.Shell;
 import hudson.util.FormValidation;
-import hudson.tasks.Builder;
-import hudson.tasks.BuildStepDescriptor;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
-import org.kohsuke.args4j.spi.Messages;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -44,13 +35,7 @@ import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import jenkins.tasks.SimpleBuildStep;
-
 public class EdgePushBuilder extends BaseBuilder {
-
-    public String getModuleFilePath() {
-        return moduleFilePath;
-    }
 
     public String getDockerRegistryType() {
         return dockerRegistryType;
@@ -79,7 +64,16 @@ public class EdgePushBuilder extends BaseBuilder {
         this.acrName = acrName;
     }
 
-    private String moduleFilePath;
+    public String getModulesToBuild() {
+        return modulesToBuild;
+    }
+
+    @DataBoundSetter
+    public void setModulesToBuild(String modulesToBuild) {
+        this.modulesToBuild = modulesToBuild;
+    }
+
+    private String modulesToBuild;
 
     private String dockerRegistryType;
 
@@ -89,10 +83,8 @@ public class EdgePushBuilder extends BaseBuilder {
 
     @DataBoundConstructor
     public EdgePushBuilder(final String azureCredentialsId,
-                           final String resourceGroup,
-                           final String moduleFilePath) {
+                           final String resourceGroup) {
         super(azureCredentialsId, resourceGroup);
-        this.moduleFilePath = moduleFilePath;
         this.dockerRegistryType = Constants.DOCKER_REGISTRY_TYPE_ACR;
     }
 
@@ -137,6 +129,7 @@ public class EdgePushBuilder extends BaseBuilder {
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\""+url+"\"");
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\""+username+"\"");
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\""+password+"\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\""+modulesToBuild+"\"");
         writer.close();
 
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));

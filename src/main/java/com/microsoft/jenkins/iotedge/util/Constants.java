@@ -31,6 +31,7 @@ public final class Constants {
     public static final String IOTEDGEDEV_ENV_REGISTRY_SERVER = "CONTAINER_REGISTRY_SERVER";
     public static final String IOTEDGEDEV_ENV_REGISTRY_USERNAME = "CONTAINER_REGISTRY_USERNAME";
     public static final String IOTEDGEDEV_ENV_REGISTRY_PASSWORD = "CONTAINER_REGISTRY_PASSWORD";
+    public static final String IOTEDGEDEV_ENV_ACTIVE_MODULES = "ACTIVE_MODULES";
 
     public static Map<String, String> iotedgedevEnvMap;
     static {
