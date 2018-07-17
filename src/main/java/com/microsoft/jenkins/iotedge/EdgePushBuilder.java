@@ -2,6 +2,8 @@ package com.microsoft.jenkins.iotedge;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.containerregistry.AccessKeyType;
 import com.microsoft.azure.management.containerregistry.Registries;
@@ -10,9 +12,11 @@ import com.microsoft.azure.management.containerregistry.RegistryCredentials;
 import com.microsoft.azure.management.containerregistry.implementation.ContainerRegistryManager;
 import com.microsoft.azure.management.containerregistry.implementation.RegistryImpl;
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
+import com.microsoft.jenkins.iotedge.model.DockerCredential;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import com.microsoft.jenkins.iotedge.util.Env;
+import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
@@ -33,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EdgePushBuilder extends BaseBuilder {
@@ -94,6 +99,7 @@ public class EdgePushBuilder extends BaseBuilder {
         listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
         listener.getLogger().println("Is ACR? " + isAcr);
         String url="", username="", password="";
+
         if (isAcr) {
             final Azure azureClient = AzureUtils.buildClient(run.getParent(), getAzureCredentialsId());
             Registries rs = azureClient.containerRegistries();
@@ -131,6 +137,17 @@ public class EdgePushBuilder extends BaseBuilder {
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\""+password+"\"");
         writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\""+modulesToBuild+"\"");
         writer.close();
+
+        // Save docker credential to a file
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, DockerCredential> credentialMap = new HashMap<>();
+        File credentialFile = new File(Paths.get(workspace.getRemote(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
+        if(credentialFile.exists() && !credentialFile.isDirectory()) {
+            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
+        }
+        DockerCredential dockerCredential = new DockerCredential(username,password,url);
+        credentialMap.put(url, dockerCredential);
+        mapper.writeValue(credentialFile, credentialMap);
 
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));
         try {

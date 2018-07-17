@@ -7,7 +7,7 @@ package com.microsoft.jenkins.iotedge;
 
 
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
-import com.microsoft.jenkins.iotedge.model.AzureCredential;
+import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class ShellExecuter {
 
     }
 
-    public void login(AzureCredential credentialsCache) throws AzureCredentialsValidationException {
+    public void login(AzureCredentialCache credentialsCache) throws AzureCredentialsValidationException {
         String command = "az login --service-principal -u " + credentialsCache.clientId + " -p " + credentialsCache.clientSecret + " --tenant " + credentialsCache.tenantId;
         try {
             executeAZ(command, false);
@@ -56,11 +56,11 @@ public class ShellExecuter {
 
     public String executeAZ(String command, Boolean printCommand) throws AzureCloudException {
         if (printCommand) {
-            logger.println("Running: " + command);
+            if(logger != null) logger.println("Running: " + command);
         }
         ExitResult result = executeCommand(command);
         if (result.code == 0) {
-            logger.println(result.output);
+            if(logger != null) logger.println(result.output);
             return result.output;
         }
         throw AzureCloudException.create(result.output);

@@ -1,0 +1,39 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+    <f:section title="${%Iothub_Configuration}">
+        <f:entry title="${%Azure_Credentials}" field="azureCredentialsId">
+                    <c:select expressionAllowed="false"/>
+                </f:entry>
+                <f:entry title="${%Resource_Group_Name}" field="resourceGroup">
+                    <f:select/>
+                </f:entry>
+                <f:entry title="${%Iothub_Name}" field="iothubName">
+                    <f:select/>
+                </f:entry>
+
+    </f:section>
+    <f:section title="${%Deployment_Configuration}">
+        <f:entry title="${%Deployment_Id}" field="deploymentId">
+                                                        <f:textbox/>
+                                            </f:entry>
+        <f:entry title="${%Priority}" field="priority">
+                                                                <f:textbox/>
+                                                    </f:entry>
+        <f:radioBlock name="deploymentType" value="multiple" inline="true" title="${%Deployment_Multiple}"
+                                      checked="${ instance.getDeploymentType()==null || instance.getDeploymentType() == 'multiple'}"
+                                      help="/${descriptor.descriptorUrl}/help/publishViaFile">
+                        <f:entry title="${%Target_Condition}" field="targetCondition">
+                                                                        <f:textbox/>
+                                                            </f:entry>
+
+                </f:radioBlock>
+
+                <f:radioBlock name="deploymentType" value="single" inline="true" title="${%Deployment_Single}"
+                                              checked="${ instance.getDeploymentType()==null || instance.getDeploymentType() == 'single'}"
+                                              help="/${descriptor.descriptorUrl}/help/publishViaFile">
+                    <f:entry title="${%Device_ID}" field="deviceId">
+                                                        <f:textbox/>
+                                            </f:entry>
+                </f:radioBlock>
+    </f:section>
+</j:jelly>

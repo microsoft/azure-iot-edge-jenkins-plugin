@@ -156,6 +156,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-api-mockito-common:1.7.0RC2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.powermock:powermock-api-support:1.7.0RC2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.github.stefanbirkner:system-rules:1.16.0" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20180130" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.findbugs:annotations:3.0.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
