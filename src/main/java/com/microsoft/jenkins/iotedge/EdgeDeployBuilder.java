@@ -40,7 +40,9 @@ import javax.servlet.ServletException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,20 +119,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-        // Get docker credential from temp file
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, DockerCredential> credentialMap = new HashMap<>();
-        File credentialFile = new File(Paths.get(workspace.getRemote(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
-        if(credentialFile.exists() && !credentialFile.isDirectory()) {
-            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
-            for(Map.Entry<String, DockerCredential> entry: credentialMap.entrySet()) {
-                DockerCredential value = (DockerCredential) entry.getValue();
-                listener.getLogger().println(entry.getKey()+"|"+value.username+"|"+value.password);
-            }
-        }else {
-            listener.getLogger().println("No docker credential cache");
-        }
-        credentialFile.delete();
+
 
         // Get deployment manifest
 //        File templateFile = new File(Paths.get(workspace.getRemote(), Constants.EDGE_DEPLOYMENT_MANIFEST_FILENAME).toString());
@@ -199,6 +188,42 @@ public class EdgeDeployBuilder extends BaseBuilder {
         InputStream stream = new FileInputStream(deploymentJsonPath);
         JSONObject deploymentJson = new JSONObject(IOUtils.toString(stream, "UTF-8"));
         stream.close();
+
+        // Get docker credential from temp file
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, DockerCredential> credentialMap = new HashMap<>();
+        File credentialFile = new File(Paths.get(workspace.getRemote(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
+        if(credentialFile.exists() && !credentialFile.isDirectory()) {
+            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
+            for(Map.Entry<String, DockerCredential> entry: credentialMap.entrySet()) {
+                DockerCredential value = (DockerCredential) entry.getValue();
+                listener.getLogger().println(entry.getKey()+"|"+value.username+"|"+value.password);
+            }
+        }else {
+            listener.getLogger().println("No docker credential cache");
+        }
+        credentialFile.delete();
+        if(credentialMap.size() != 0) {
+            JSONObject settings = deploymentJson.getJSONObject("moduleContent")
+                    .getJSONObject("$edgeAgent")
+                    .getJSONObject("properties.desired")
+                    .getJSONObject("runtime")
+                    .getJSONObject("settings");
+            if(settings.has("registryCredentials")) {
+                JSONObject registryCredentials = settings.getJSONObject("registryCredentials");
+                JSONArray keys = registryCredentials.names();
+                List<DockerCredential> credentialList = new ArrayList<>(credentialMap.values());
+                int index = 0;
+                for(int i=0;i<keys.length();i++) {
+                    JSONObject credential = registryCredentials.getJSONObject(keys.getString(i));
+                    if(credential.has("username") && credential.getString("username").startsWith("$") && index<credentialList.size()) {
+                        JSONObject updatedCredential = new JSONObject(mapper.valueToTree(credentialList.get(index++)).toString());
+                        registryCredentials.put(keys.getString(i), updatedCredential);
+                    }
+                }
+            }
+        }
+
         JSONObject newJson = new JSONObject();
         newJson.put("content", deploymentJson);
         PrintWriter writer = new PrintWriter(deploymentJsonPath);

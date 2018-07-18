@@ -16,10 +16,7 @@ import com.microsoft.jenkins.iotedge.model.DockerCredential;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import com.microsoft.jenkins.iotedge.util.Env;
-import hudson.EnvVars;
-import hudson.Launcher;
-import hudson.Extension;
-import hudson.FilePath;
+import hudson.*;
 import hudson.model.*;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -154,8 +151,8 @@ public class EdgePushBuilder extends BaseBuilder {
             executer.executeAZ("iotedgedev push", true);
         } catch (AzureCloudException e) {
             e.printStackTrace();
-            listener.getLogger().println(e.getMessage());
-            run.setResult(Result.FAILURE);
+            throw new AbortException(e.getMessage());
+//            run.setResult(Result.FAILURE);
         }
     }
 

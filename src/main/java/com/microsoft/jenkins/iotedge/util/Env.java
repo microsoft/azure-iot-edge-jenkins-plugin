@@ -32,11 +32,6 @@ public final class Env {
             "#\n" +
             "# MODULES\n" +
             "#\n" +
-            "\n" +
-            "ACTIVE_MODULES=\"*\" \n" +
-            "    # \"*\" - to build all modules\n" +
-            "    # \"filtermodule, module1\" - Comma delimited list of modules to build\n" +
-            "\n" +
             "ACTIVE_DOCKER_PLATFORMS=\"amd64\"\n" +
             "    # \"*\" - to build all docker files\n" +
             "    # \"amd64,amd64.debug\" - Comma delimted list of docker files to build\n" +
