@@ -21,7 +21,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerregistry:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-client-runtime:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.rest:client-runtime:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.1.0" level="project" />
@@ -32,13 +33,6 @@
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:converter-jackson:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.2" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:adapter-rxjava:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-resources:1.13.0" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.5" level="project" />
-    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.4" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-annotations:1.7.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-storage:1.13.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-client-authentication:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:adal4j:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.nimbusds:oauth2-oidc-sdk:4.5" level="project" />
@@ -46,6 +40,11 @@
     <orderEntry type="library" name="Maven: com.nimbusds:lang-tag:1.4" level="project" />
     <orderEntry type="library" name="Maven: com.nimbusds:nimbus-jose-jwt:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.2.4" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-annotations:1.2.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-resources:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.4" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-storage:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-network:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-compute:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-graph-rbac:1.13.0" level="project" />
@@ -62,6 +61,7 @@
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-cdn:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-sql:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerinstance:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerregistry:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerservice:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-cosmosdb:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-search:1.13.0" level="project" />
