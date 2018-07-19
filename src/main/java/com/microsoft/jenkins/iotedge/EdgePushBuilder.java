@@ -10,7 +10,6 @@ import com.microsoft.azure.management.containerregistry.Registries;
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.containerregistry.RegistryCredentials;
 import com.microsoft.azure.management.containerregistry.implementation.ContainerRegistryManager;
-import com.microsoft.azure.management.containerregistry.implementation.RegistryImpl;
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.model.DockerCredential;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
@@ -94,26 +93,16 @@ public class EdgePushBuilder extends BaseBuilder {
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
         listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
-        listener.getLogger().println("Is ACR? " + isAcr);
         String url="", username="", password="";
 
         if (isAcr) {
             final Azure azureClient = AzureUtils.buildClient(run.getParent(), getAzureCredentialsId());
             Registries rs = azureClient.containerRegistries();
             Registry r = rs.getByResourceGroup(getResourceGroup(), acrName);
-            RegistryCredentials rc2 = rs.getCredentials(getResourceGroup(), acrName);
-            RegistryImpl impl;
-            listener.getLogger().println(r.adminUserEnabled());
-            listener.getLogger().println(r.loginServerUrl());
             RegistryCredentials rc = r.getCredentials();
             username = rc.username();
             url = r.loginServerUrl();
-            listener.getLogger().println(url);
-            listener.getLogger().println(username);
-            for (Map.Entry<AccessKeyType, String> entry : rc.accessKeys().entrySet())
-            {
-                listener.getLogger().println(entry.getKey().PRIMARY + ":" + entry.getKey().SECONDARY + "/" + entry.getValue());
-            }
+            password = rc.accessKeys().get(AccessKeyType.PRIMARY);
         } else {
             url = dockerRegistryEndpoint.getUrl();
             String credentialId = dockerRegistryEndpoint.getCredentialsId();
@@ -121,12 +110,9 @@ public class EdgePushBuilder extends BaseBuilder {
             if(credential != null) {
                 username = credential.getUsername();
                 password = credential.getPassword().getPlainText();
-                listener.getLogger().println(url);
-                listener.getLogger().println(username);
-                listener.getLogger().println(password);
             }
         }
-        listener.getLogger().println(workspace.getRemote());
+
         PrintWriter writer = new PrintWriter(Paths.get(workspace.getRemote(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "UTF-8");
         writer.println(Env.EnvString);
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\""+url+"\"");

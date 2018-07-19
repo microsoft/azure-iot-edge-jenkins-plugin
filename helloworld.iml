@@ -21,10 +21,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-client-runtime:1.5.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.rest:client-runtime:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerregistry:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-client-runtime:1.5.4" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.rest:client-runtime:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:retrofit:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okhttp3:okhttp:3.4.2" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.okio:okio:1.9.0" level="project" />
@@ -33,43 +32,44 @@
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:converter-jackson:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-joda:2.7.2" level="project" />
     <orderEntry type="library" name="Maven: com.squareup.retrofit2:adapter-rxjava:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-client-authentication:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-resources:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.5" level="project" />
+    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.4" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-annotations:1.7.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-storage:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-client-authentication:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:adal4j:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.nimbusds:oauth2-oidc-sdk:4.5" level="project" />
     <orderEntry type="library" name="Maven: net.minidev:json-smart:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.nimbusds:lang-tag:1.4" level="project" />
     <orderEntry type="library" name="Maven: com.nimbusds:nimbus-jose-jwt:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.2.4" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-annotations:1.2.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-resources:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.5" level="project" />
-    <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.2.4" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-storage:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-network:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-compute:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-graph-rbac:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-keyvault:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-batch:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-trafficmanager:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-dns:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-redis:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-appservice:1.10.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-network:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-compute:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-graph-rbac:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-keyvault:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-batch:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-trafficmanager:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-dns:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-redis:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-appservice:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-storage:6.1.0" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-keyvault-core:0.8.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-locks:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-eventhub:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-cdn:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-sql:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerinstance:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerregistry:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerservice:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-cosmosdb:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-search:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-msi:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-monitor:1.10.0" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-servicebus:1.10.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-locks:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-eventhub:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-cdn:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-sql:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerinstance:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-containerservice:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-cosmosdb:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-search:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-msi:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-monitor:1.13.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-servicebus:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.1" level="project" />
-    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-batchai:1.10.0" level="project" />
+    <orderEntry type="library" name="Maven: com.microsoft.azure:azure-mgmt-batchai:1.13.0" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:azure-credentials:1.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:credentials:2.1.14" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr4-runtime:4.5" level="project" />
@@ -79,13 +79,13 @@
     <orderEntry type="library" name="Maven: com.microsoft.azure:azure-keyvault-webkey:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:credentials-binding:1.11" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:structs:1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:azure-commons-core:0.2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:azure-commons-core:0.2.6" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:applicationinsights-web:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.azure:applicationinsights-core:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: eu.infomas:annotation-detector:3.0.4" level="project" />
     <orderEntry type="library" name="Maven: com.auth0:java-jwt:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.55" level="project" />
-    <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:azure-commons:0.2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:azure-commons:0.2.6" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins.workflow:workflow-step-api:2.10" level="project" />
     <orderEntry type="library" name="Maven: org.jenkins-ci.plugins:ssh-credentials:1.13" level="project" />
     <orderEntry type="library" name="Maven: com.github.docker-java:docker-java:3.0.10" level="project" />
