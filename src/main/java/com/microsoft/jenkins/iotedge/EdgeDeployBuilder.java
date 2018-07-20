@@ -164,24 +164,15 @@ public class EdgeDeployBuilder extends BaseBuilder {
 //        }
 
         // Get deployment.json using iotedgedev
-//        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));
-//        try {
-//            executer.executeAZ("iotedgedev --set-config", true);
-//        } catch (AzureCloudException e) {
-//            e.printStackTrace();
-//            listener.getLogger().println(e.getMessage());
-//            run.setResult(Result.FAILURE);
-//        }
-
-        // replace docker credentials
-
-        // deploy using azure cli
-        String condition = "";
-        if(deploymentType.equals("multiple")) {
-            condition = targetCondition;
-        }else {
-            condition = "deviceId='"+deviceId+"'";
+        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));
+        try {
+            executer.executeAZ("iotedgedev --set-config", true);
+        } catch (AzureCloudException e) {
+            e.printStackTrace();
+            listener.getLogger().println(e.getMessage());
+            run.setResult(Result.FAILURE);
         }
+
         String deploymentJsonPath = Paths.get(workspace.getRemote(), "config", Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME).toString();
 
         // Modify deployment.json structure
@@ -230,14 +221,21 @@ public class EdgeDeployBuilder extends BaseBuilder {
         writer.write(newJson.toString());
         writer.close();
 
+        // deploy using azure cli
+        String condition = "";
+        if(deploymentType.equals("multiple")) {
+            condition = targetCondition;
+        }else {
+            condition = "deviceId='"+deviceId+"'";
+        }
         AzureCredentials.ServicePrincipal servicePrincipal = AzureCredentials.getServicePrincipal(getAzureCredentialsId());
         AzureCredentialCache credentialCache = new AzureCredentialCache(servicePrincipal);
-        ShellExecuter executer = new ShellExecuter(listener.getLogger());
+        ShellExecuter azExecuter = new ShellExecuter(listener.getLogger());
         try {
-            executer.login(credentialCache);
+            azExecuter.login(credentialCache);
 
             String scriptToDelete = "az iot edge deployment delete --hub-name "+iothubName+" --config-id "+deploymentId;
-            executer.executeAZ(scriptToDelete, true);
+            azExecuter.executeAZ(scriptToDelete, true);
         }catch (Exception e) {
             if(!e.getMessage().contains("ConfigurationNotFound")) {
                 listener.getLogger().println("Failure: " + e.getMessage());

@@ -113,6 +113,7 @@ public class EdgePushBuilder extends BaseBuilder {
             }
         }
 
+        // Generate .env file for iotedgedev use
         PrintWriter writer = new PrintWriter(Paths.get(workspace.getRemote(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "UTF-8");
         writer.println(Env.EnvString);
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\""+url+"\"");
