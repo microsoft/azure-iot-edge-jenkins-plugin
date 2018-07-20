@@ -56,12 +56,24 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
         this.resourceGroup = resourceGroup;
     }
 
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    @DataBoundSetter
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
+
+
     private String azureCredentialsId;
     private String resourceGroup;
+    private String rootPath;
 
-    protected BaseBuilder(String azureCredentialsId, String resourceGroup) {
+    protected BaseBuilder(String azureCredentialsId, String resourceGroup, String rootPath) {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroup = resourceGroup;
+        this.rootPath = rootPath;
     }
 
     @Override

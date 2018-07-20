@@ -113,8 +113,9 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
     @DataBoundConstructor
     public EdgeDeployBuilder(final String azureCredentialsId,
-                           final String resourceGroup) {
-        super(azureCredentialsId, resourceGroup);
+                           final String resourceGroup,
+                             final String rootPath) {
+        super(azureCredentialsId, resourceGroup, rootPath);
     }
 
     @Override
@@ -122,7 +123,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
 
         // Get deployment manifest
-//        File templateFile = new File(Paths.get(workspace.getRemote(), Constants.EDGE_DEPLOYMENT_MANIFEST_FILENAME).toString());
+//        File templateFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_MANIFEST_FILENAME).toString());
 //        if(!templateFile.exists() || !templateFile.isFile()) {
 //            listener.getLogger().println("Can not find deployment manifest. Make sure "+Constants.EDGE_DEPLOYMENT_MANIFEST_FILENAME+" is under the root of solution");
 //            run.setResult(Result.FAILURE);
@@ -141,7 +142,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 //                Matcher m = Pattern.compile("\\$\\{MODULES\\." + k + "\\.(.*)\\}$").matcher(image);
 //                if (m.find()) {
 //                    String platform = m.group(1);
-//                    File moduleConfigFile = new File(Paths.get(workspace.getRemote(), Constants.EDGE_MODULES_FOLDERNAME, k, Constants.EDGE_MODULE_CONFIG_FILENAME).toString());
+//                    File moduleConfigFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_MODULES_FOLDERNAME, k, Constants.EDGE_MODULE_CONFIG_FILENAME).toString());
 //                    if (!moduleConfigFile.exists() || !moduleConfigFile.isFile()) {
 //                        listener.getLogger().println("Module: " + k + " do not have module.json, skip.");
 //                        continue;
@@ -154,7 +155,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 //                    v.getJSONObject("settings").put("image", concatImage);
 //                }
 //            }
-//            File outputFile = new File(Paths.get(workspace.getRemote(), Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME).toString());
+//            File outputFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME).toString());
 //            PrintWriter writer = new PrintWriter(outputFile);
 //            writer.write(templateJson.toString());
 //        }
@@ -164,7 +165,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 //        }
 
         // Get deployment.json using iotedgedev
-        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));
+        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
             executer.executeAZ("iotedgedev --set-config", true);
         } catch (AzureCloudException e) {
@@ -173,7 +174,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
             run.setResult(Result.FAILURE);
         }
 
-        String deploymentJsonPath = Paths.get(workspace.getRemote(), "config", Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME).toString();
+        String deploymentJsonPath = Paths.get(workspace.getRemote(), getRootPath(), "config", Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME).toString();
 
         // Modify deployment.json structure
         InputStream stream = new FileInputStream(deploymentJsonPath);
@@ -183,7 +184,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         // Get docker credential from temp file
         ObjectMapper mapper = new ObjectMapper();
         Map<String, DockerCredential> credentialMap = new HashMap<>();
-        File credentialFile = new File(Paths.get(workspace.getRemote(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
+        File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
         if(credentialFile.exists() && !credentialFile.isDirectory()) {
             credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
             for(Map.Entry<String, DockerCredential> entry: credentialMap.entrySet()) {
@@ -234,7 +235,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         try {
             azExecuter.login(credentialCache);
 
-            String scriptToDelete = "az iot edge deployment delete --hub-name "+iothubName+" --config-id "+deploymentId;
+            String scriptToDelete = "az iot edge deployment delete --hub-name \""+iothubName+"\" --config-id \""+deploymentId+"\"";
             azExecuter.executeAZ(scriptToDelete, true);
         }catch (Exception e) {
             if(!e.getMessage().contains("ConfigurationNotFound")) {
@@ -244,7 +245,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         }
 
         try {
-            String scriptToDeploy = "az iot edge deployment create --config-id "+deploymentId+" --hub-name "+iothubName+" --content "+deploymentJsonPath+" --target-condition "+condition+" --priority "+priority;
+            String scriptToDeploy = "az iot edge deployment create --config-id \""+deploymentId+"\" --hub-name \""+iothubName+"\" --content \""+deploymentJsonPath+"\" --target-condition \""+condition+"\" --priority \""+priority+"\"";
             executer.executeAZ(scriptToDeploy, true);
         }catch (Exception e) {
             listener.getLogger().println("Failure: " + e.getMessage());

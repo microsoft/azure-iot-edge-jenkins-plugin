@@ -84,8 +84,9 @@ public class EdgePushBuilder extends BaseBuilder {
 
     @DataBoundConstructor
     public EdgePushBuilder(final String azureCredentialsId,
-                           final String resourceGroup) {
-        super(azureCredentialsId, resourceGroup);
+                           final String resourceGroup,
+                           final String rootPath) {
+        super(azureCredentialsId, resourceGroup, rootPath);
         this.dockerRegistryType = Constants.DOCKER_REGISTRY_TYPE_ACR;
     }
 
@@ -114,7 +115,7 @@ public class EdgePushBuilder extends BaseBuilder {
         }
 
         // Generate .env file for iotedgedev use
-        PrintWriter writer = new PrintWriter(Paths.get(workspace.getRemote(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "UTF-8");
+        PrintWriter writer = new PrintWriter(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "UTF-8");
         writer.println(Env.EnvString);
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\""+url+"\"");
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\""+username+"\"");
@@ -125,7 +126,7 @@ public class EdgePushBuilder extends BaseBuilder {
         // Save docker credential to a file
         ObjectMapper mapper = new ObjectMapper();
         Map<String, DockerCredential> credentialMap = new HashMap<>();
-        File credentialFile = new File(Paths.get(workspace.getRemote(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
+        File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
         if(credentialFile.exists() && !credentialFile.isDirectory()) {
             credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
         }
@@ -133,7 +134,7 @@ public class EdgePushBuilder extends BaseBuilder {
         credentialMap.put(url, dockerCredential);
         mapper.writeValue(credentialFile, credentialMap);
 
-        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote()));
+        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
             executer.executeAZ("iotedgedev push", true);
         } catch (AzureCloudException e) {
