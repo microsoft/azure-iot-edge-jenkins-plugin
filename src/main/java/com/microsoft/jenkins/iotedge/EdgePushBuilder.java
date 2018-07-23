@@ -74,7 +74,7 @@ public class EdgePushBuilder extends BaseBuilder {
         this.modulesToBuild = modulesToBuild;
     }
 
-    private String modulesToBuild;
+    private String modulesToBuild = DescriptorImpl.defaultModulesToBuild;
 
     private String dockerRegistryType;
 
@@ -140,14 +140,12 @@ public class EdgePushBuilder extends BaseBuilder {
         } catch (AzureCloudException e) {
             e.printStackTrace();
             throw new AbortException(e.getMessage());
-//            run.setResult(Result.FAILURE);
         }
     }
 
     @Extension
     @Symbol("azureIoTEdgePush")
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
-
         public FormValidation doCheckName(@QueryParameter String value, @QueryParameter boolean useFrench)
                 throws IOException, ServletException {
 

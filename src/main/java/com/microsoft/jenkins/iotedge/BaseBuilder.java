@@ -68,7 +68,7 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
 
     private String azureCredentialsId;
     private String resourceGroup;
-    private String rootPath;
+    private String rootPath = DescriptorImpl.defaultRootPath;
 
     protected BaseBuilder(String azureCredentialsId, String resourceGroup, String rootPath) {
         this.azureCredentialsId = azureCredentialsId;
@@ -82,6 +82,8 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     }
 
     protected static class DescriptorImpl extends BuildStepDescriptor<Builder> {
+        public static final String defaultRootPath = "./";
+        public static final String defaultModulesToBuild = "*";
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;

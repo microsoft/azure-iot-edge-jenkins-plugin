@@ -2,10 +2,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
     <f:section title="${%Module_Configuration}">
     <f:entry title="${%Root_Path}" field="rootPath">
-                <f:textbox default="./"/>
+                <f:textbox default="${descriptor.defaultRootPath}"/>
             </f:entry>
         <f:entry title="${%Module_File_Path}" field="modulesToBuild">
-            <f:textbox default="*"/>
+            <f:textbox default="${descriptor.defaultModulesToBuild}"/>
         </f:entry>
     </f:section>
 
