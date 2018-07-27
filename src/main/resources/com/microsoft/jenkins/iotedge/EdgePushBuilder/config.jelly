@@ -4,7 +4,7 @@
     <f:entry title="${%Root_Path}" field="rootPath">
                 <f:textbox default="${descriptor.defaultRootPath}"/>
             </f:entry>
-        <f:entry title="${%Module_File_Path}" field="modulesToBuild">
+        <f:entry title="${%Module_File_Path}" field="bypassModules">
             <f:textbox default="${descriptor.defaultModulesToBuild}"/>
         </f:entry>
     </f:section>

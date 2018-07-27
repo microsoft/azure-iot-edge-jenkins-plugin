@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for
+ * license information.
+ */
+
 package com.microsoft.jenkins.iotedge;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -7,6 +13,7 @@ import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.model.DockerCredential;
 import com.microsoft.jenkins.iotedge.util.Constants;
+import com.microsoft.jenkins.iotedge.util.Env;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -99,9 +106,14 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
     @DataBoundConstructor
     public EdgeDeployBuilder(final String azureCredentialsId,
-                           final String resourceGroup,
+                             final String resourceGroup,
                              final String rootPath) {
         super(azureCredentialsId, resourceGroup, rootPath);
+    }
+
+    public EdgeDeployBuilder(final String azureCredentialsId,
+                             final String resourceGroup) {
+        super(azureCredentialsId, resourceGroup);
     }
 
     @Override
@@ -153,7 +165,9 @@ public class EdgeDeployBuilder extends BaseBuilder {
         // Get deployment.json using iotedgedev
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
-            executer.executeAZ("iotedgedev --set-config", true);
+            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "","","","");
+            executer.executeAZ("iotedgedev build", true);
+
         } catch (AzureCloudException e) {
             e.printStackTrace();
             listener.getLogger().println(e.getMessage());
@@ -171,30 +185,27 @@ public class EdgeDeployBuilder extends BaseBuilder {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, DockerCredential> credentialMap = new HashMap<>();
         File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
-        if(credentialFile.exists() && !credentialFile.isDirectory()) {
-            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
-            for(Map.Entry<String, DockerCredential> entry: credentialMap.entrySet()) {
-                DockerCredential value = (DockerCredential) entry.getValue();
-                listener.getLogger().println(entry.getKey()+"|"+value.username+"|"+value.password);
-            }
-        }else {
+        if (credentialFile.exists() && !credentialFile.isDirectory()) {
+            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>() {
+            });
+        } else {
             listener.getLogger().println("No docker credential cache");
         }
         credentialFile.delete();
-        if(credentialMap.size() != 0) {
+        if (credentialMap.size() != 0) {
             JSONObject settings = deploymentJson.getJSONObject("moduleContent")
                     .getJSONObject("$edgeAgent")
                     .getJSONObject("properties.desired")
                     .getJSONObject("runtime")
                     .getJSONObject("settings");
-            if(settings.has("registryCredentials")) {
+            if (settings.has("registryCredentials")) {
                 JSONObject registryCredentials = settings.getJSONObject("registryCredentials");
                 JSONArray keys = registryCredentials.names();
                 List<DockerCredential> credentialList = new ArrayList<>(credentialMap.values());
                 int index = 0;
-                for(int i=0;i<keys.length();i++) {
+                for (int i = 0; i < keys.length(); i++) {
                     JSONObject credential = registryCredentials.getJSONObject(keys.getString(i));
-                    if(credential.has("username") && credential.getString("username").startsWith("$") && index<credentialList.size()) {
+                    if (credential.has("username") && credential.getString("username").startsWith("$") && index < credentialList.size()) {
                         JSONObject updatedCredential = new JSONObject(mapper.valueToTree(credentialList.get(index++)).toString());
                         registryCredentials.put(keys.getString(i), updatedCredential);
                     }
@@ -210,10 +221,10 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
         // deploy using azure cli
         String condition = "";
-        if(deploymentType.equals("multiple")) {
+        if (deploymentType.equals("multiple")) {
             condition = targetCondition;
-        }else {
-            condition = "deviceId='"+deviceId+"'";
+        } else {
+            condition = "deviceId='" + deviceId + "'";
         }
         AzureCredentials.ServicePrincipal servicePrincipal = AzureCredentials.getServicePrincipal(getAzureCredentialsId());
         AzureCredentialCache credentialCache = new AzureCredentialCache(servicePrincipal);
@@ -221,22 +232,40 @@ public class EdgeDeployBuilder extends BaseBuilder {
         try {
             azExecuter.login(credentialCache);
 
-            String scriptToDelete = "az iot edge deployment delete --hub-name \""+iothubName+"\" --config-id \""+deploymentId+"\"";
+            String scriptToDelete = "az iot edge deployment delete --hub-name \"" + iothubName + "\" --config-id \"" + deploymentId + "\"";
             azExecuter.executeAZ(scriptToDelete, true);
-        }catch (Exception e) {
-            if(!e.getMessage().contains("ConfigurationNotFound")) {
+        } catch (Exception e) {
+            if (!e.getMessage().contains("ConfigurationNotFound")) {
                 listener.getLogger().println("Failure: " + e.getMessage());
                 run.setResult(Result.FAILURE);
             }
         }
 
         try {
-            String scriptToDeploy = "az iot edge deployment create --config-id \""+deploymentId+"\" --hub-name \""+iothubName+"\" --content \""+deploymentJsonPath+"\" --target-condition \""+condition+"\" --priority \""+priority+"\"";
+            String scriptToDeploy = "az iot edge deployment create --config-id \"" + deploymentId + "\" --hub-name \"" + iothubName + "\" --content \"" + deploymentJsonPath + "\" --target-condition \"" + condition + "\" --priority \"" + priority + "\"";
             executer.executeAZ(scriptToDeploy, true);
-        }catch (Exception e) {
+        } catch (Exception e) {
             listener.getLogger().println("Failure: " + e.getMessage());
             run.setResult(Result.FAILURE);
         }
+    }
+
+    // TODO: remove this
+    private void writeEnvFile(String path, String url, String username, String password, String bypassModules) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(path, "UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        writer.println(Env.EnvString);
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\"" + username + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\"" + password + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
+        writer.close();
     }
 
     @Extension
@@ -269,8 +298,8 @@ public class EdgeDeployBuilder extends BaseBuilder {
         }
 
         public ListBoxModel doFillIothubNameItems(@AncestorInPath Item owner,
-                                               @QueryParameter String azureCredentialsId,
-                                               @QueryParameter String resourceGroup) {
+                                                  @QueryParameter String azureCredentialsId,
+                                                  @QueryParameter String resourceGroup) {
             if (StringUtils.isNotBlank(azureCredentialsId) && StringUtils.isNotBlank(resourceGroup)) {
                 return listIothubNameItems(owner, azureCredentialsId, resourceGroup);
             } else {

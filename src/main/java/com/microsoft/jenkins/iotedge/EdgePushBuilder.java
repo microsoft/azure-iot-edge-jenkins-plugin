@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for
+ * license information.
+ */
+
 package com.microsoft.jenkins.iotedge;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
@@ -15,23 +21,27 @@ import com.microsoft.jenkins.iotedge.model.DockerCredential;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import com.microsoft.jenkins.iotedge.util.Env;
-import hudson.*;
-import hudson.model.*;
+import hudson.AbortException;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractProject;
+import hudson.model.Item;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
+import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
 
 import javax.servlet.ServletException;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,16 +75,16 @@ public class EdgePushBuilder extends BaseBuilder {
         this.acrName = acrName;
     }
 
-    public String getModulesToBuild() {
-        return modulesToBuild;
+    public String getBypassModules() {
+        return bypassModules;
     }
 
     @DataBoundSetter
-    public void setModulesToBuild(String modulesToBuild) {
-        this.modulesToBuild = modulesToBuild;
+    public void setBypassModules(String bypassModules) {
+        this.bypassModules = bypassModules;
     }
 
-    private String modulesToBuild = DescriptorImpl.defaultModulesToBuild;
+    private String bypassModules = DescriptorImpl.defaultModulesToBuild;
 
     private String dockerRegistryType;
 
@@ -90,11 +100,17 @@ public class EdgePushBuilder extends BaseBuilder {
         this.dockerRegistryType = Constants.DOCKER_REGISTRY_TYPE_ACR;
     }
 
+    public EdgePushBuilder(final String azureCredentialsId,
+                           final String resourceGroup) {
+        super(azureCredentialsId, resourceGroup);
+        this.dockerRegistryType = Constants.DOCKER_REGISTRY_TYPE_ACR;
+    }
+
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
         listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
-        String url="", username="", password="";
+        String url = "", username = "", password = "";
 
         if (isAcr) {
             final Azure azureClient = AzureUtils.buildClient(run.getParent(), getAzureCredentialsId());
@@ -108,29 +124,24 @@ public class EdgePushBuilder extends BaseBuilder {
             url = dockerRegistryEndpoint.getUrl();
             String credentialId = dockerRegistryEndpoint.getCredentialsId();
             StandardUsernamePasswordCredentials credential = CredentialsProvider.findCredentialById(credentialId, StandardUsernamePasswordCredentials.class, run);
-            if(credential != null) {
+            if (credential != null) {
                 username = credential.getUsername();
                 password = credential.getPassword().getPlainText();
             }
         }
 
         // Generate .env file for iotedgedev use
-        PrintWriter writer = new PrintWriter(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "UTF-8");
-        writer.println(Env.EnvString);
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\""+url+"\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\""+username+"\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\""+password+"\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\""+modulesToBuild+"\"");
-        writer.close();
+        writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), url, username, password, bypassModules);
 
         // Save docker credential to a file
         ObjectMapper mapper = new ObjectMapper();
         Map<String, DockerCredential> credentialMap = new HashMap<>();
         File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
-        if(credentialFile.exists() && !credentialFile.isDirectory()) {
-            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>(){});
+        if (credentialFile.exists() && !credentialFile.isDirectory()) {
+            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>() {
+            });
         }
-        DockerCredential dockerCredential = new DockerCredential(username,password,url);
+        DockerCredential dockerCredential = new DockerCredential(username, password, url);
         credentialMap.put(url, dockerCredential);
         mapper.writeValue(credentialFile, credentialMap);
 
@@ -141,6 +152,23 @@ public class EdgePushBuilder extends BaseBuilder {
             e.printStackTrace();
             throw new AbortException(e.getMessage());
         }
+    }
+
+    private void writeEnvFile(String path, String url, String username, String password, String bypassModules) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(path, "UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        writer.println(Env.EnvString);
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\"" + username + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\"" + password + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
+        writer.close();
     }
 
     @Extension

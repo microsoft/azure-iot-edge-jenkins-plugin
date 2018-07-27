@@ -1,21 +1,17 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for
+ * license information.
+ */
+
 package com.microsoft.jenkins.iotedge;
 
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
-import com.fasterxml.jackson.databind.deser.Deserializers;
 import com.microsoft.azure.management.Azure;
-import com.microsoft.azure.management.appservice.implementation.SiteInner;
-import com.microsoft.azure.management.appservice.implementation.WebAppsInner;
-import com.microsoft.azure.management.containerregistry.Registries;
 import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.ResourceGroup;
-import com.microsoft.azure.management.resources.fluentcore.model.HasInner;
 import com.microsoft.azure.util.AzureBaseCredentials;
-import com.microsoft.azure.util.AzureCredentials;
-import com.microsoft.jenkins.azurecommons.command.BaseCommandContext;
-import com.microsoft.jenkins.iotedge.model.AzureCloudException;
-import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
-import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import hudson.model.AbstractProject;
@@ -23,20 +19,11 @@ import hudson.model.Item;
 import hudson.security.ACL;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.tasks.Publisher;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-/**
- * Created by zhqqi on 7/5/2018.
- */
 public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     public String getAzureCredentialsId() {
         return azureCredentialsId;
@@ -76,6 +63,12 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
         this.rootPath = rootPath;
     }
 
+    protected BaseBuilder(String azureCredentialsId, String resourceGroup) {
+        this.azureCredentialsId = azureCredentialsId;
+        this.resourceGroup = resourceGroup;
+        this.rootPath = DescriptorImpl.defaultRootPath;
+    }
+
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
@@ -83,7 +76,7 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
 
     protected static class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final String defaultRootPath = "./";
-        public static final String defaultModulesToBuild = "*";
+        public static final String defaultModulesToBuild = "";
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
@@ -133,37 +126,18 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
         }
 
         protected ListBoxModel listIothubNameItems(Item owner, String azureCredentialsId,
-                                                String resourceGroup) {
+                                                   String resourceGroup) {
             final ListBoxModel model = new ListBoxModel(new ListBoxModel.Option(Constants.EMPTY_SELECTION, ""));
 
             if (StringUtils.isNotBlank(azureCredentialsId)) {
                 final Azure azureClient = AzureUtils.buildClient(owner, azureCredentialsId);
                 for (final GenericResource resource : azureClient.genericResources().listByResourceGroup(resourceGroup)) {
-                    if(resource.resourceProviderNamespace().equals("Microsoft.Devices") && resource.resourceType().equals("IotHubs")) {
+                    if (resource.resourceProviderNamespace().equals("Microsoft.Devices") && resource.resourceType().equals("IotHubs")) {
                         model.add(resource.name());
                     }
                 }
             }
 
-//            if (StringUtils.isNotBlank(azureCredentialsId)) {
-//                ShellExecuter executer = new ShellExecuter();
-//                AzureCredentials.ServicePrincipal servicePrincipal = AzureCredentials.getServicePrincipal(azureCredentialsId);
-//                AzureCredentialCache credentialCache = new AzureCredentialCache(servicePrincipal);
-//
-//                try {
-//                    executer.login(credentialCache);
-//                    String iothubsResult = executer.executeAZ("az iot hub list -g \""+ resourceGroup+"\"", false);
-//                    JSONArray iothubsJson = new JSONArray(iothubsResult);
-//                    for(int i=0;i<iothubsJson.length();i++) {
-//                        JSONObject iothub = iothubsJson.getJSONObject(i);
-//                        model.add(iothub.getString("name"));
-//                    }
-//                } catch (AzureCredentialsValidationException e) {
-//                    e.printStackTrace();
-//                } catch (AzureCloudException e) {
-//                    e.printStackTrace();
-//                }
-//            }
             return model;
         }
     }

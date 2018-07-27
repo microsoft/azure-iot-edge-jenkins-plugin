@@ -3,18 +3,20 @@
  * Licensed under the MIT License. See License.txt in the project root for
  * license information.
  */
-package com.microsoft.jenkins.iotedge;
 
+package com.microsoft.jenkins.iotedge;
 
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.Map;
 
 public class ShellExecuter {
 
@@ -56,11 +58,11 @@ public class ShellExecuter {
 
     public String executeAZ(String command, Boolean printCommand) throws AzureCloudException {
         if (printCommand) {
-            if(logger != null) logger.println("Running: " + command);
+            if (logger != null) logger.println("Running: " + command);
         }
         ExitResult result = executeCommand(command);
         if (result.code == 0) {
-            if(logger != null) logger.println(result.output);
+            if (logger != null) logger.println(result.output);
             return result.output;
         }
         throw AzureCloudException.create(result.output);
@@ -80,14 +82,21 @@ public class ShellExecuter {
 
 
         StringBuffer output = new StringBuffer();
+        Map<String, String> envs = System.getenv();
+        String[] stringEnvs = new String[envs.size()];
+        int index = 0;
+        for (Map.Entry<String, String> mapEntry : envs.entrySet())
+        {
+            stringEnvs[index++] = mapEntry.getKey()+"="+mapEntry.getValue();
+        }
 
         Process p;
         int exitCode = -1;
         try {
             if (File.pathSeparatorChar == ':') {
-                p = Runtime.getRuntime().exec("/bin/sh -c \"" + command + "\"", null, workspace);
+                p = Runtime.getRuntime().exec("/bin/sh -c \"" + command + "\"", stringEnvs, workspace);
             } else {
-                p = Runtime.getRuntime().exec("cmd.exe /c \"" + command + "\"", null, workspace);
+                p = Runtime.getRuntime().exec("cmd.exe /c \"" + command + "\"", stringEnvs, workspace);
             }
             p.waitFor();
 

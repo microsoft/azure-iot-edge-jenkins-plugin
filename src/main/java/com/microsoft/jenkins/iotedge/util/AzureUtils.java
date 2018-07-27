@@ -3,6 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for
  * license information.
  */
+
 package com.microsoft.jenkins.iotedge.util;
 
 import com.microsoft.azure.management.Azure;
@@ -10,7 +11,6 @@ import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.azure.util.AzureCredentialUtil;
 import com.microsoft.jenkins.azurecommons.core.AzureClientFactory;
 import com.microsoft.jenkins.azurecommons.core.credentials.TokenCredentialData;
-import com.microsoft.jenkins.iotedge.util.Constants;
 import hudson.model.Item;
 
 public final class AzureUtils {
