@@ -19,10 +19,15 @@ import hudson.model.Item;
 import hudson.security.ACL;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
+
+import javax.servlet.ServletException;
+import java.io.IOException;
 
 public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     public String getAzureCredentialsId() {
@@ -139,6 +144,15 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
             }
 
             return model;
+        }
+
+        public FormValidation doCheckDeploymentId(@QueryParameter String value)
+                throws IOException, ServletException {
+            if(Util.isValidDeploymentId(value)) {
+                return FormValidation.ok();
+            }else {
+                return FormValidation.error("Deployment ID is not in right format. Click help button to learn more.");
+            }
         }
     }
 }

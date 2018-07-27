@@ -26,7 +26,7 @@
                                                     </f:entry>
         <f:radioBlock name="deploymentType" value="multiple" inline="true" title="${%Deployment_Multiple}"
                                       checked="${ instance.getDeploymentType()==null || instance.getDeploymentType() == 'multiple'}"
-                                      help="/${descriptor.descriptorUrl}/help/publishViaFile">
+                                      help="/${descriptor.descriptorUrl}/help/deployMultiple">
                         <f:entry title="${%Target_Condition}" field="targetCondition">
                                                                         <f:textbox/>
                                                             </f:entry>
@@ -35,7 +35,7 @@
 
                 <f:radioBlock name="deploymentType" value="single" inline="true" title="${%Deployment_Single}"
                                               checked="${ instance.getDeploymentType()==null || instance.getDeploymentType() == 'single'}"
-                                              help="/${descriptor.descriptorUrl}/help/publishViaFile">
+                                              help="/${descriptor.descriptorUrl}/help/deploySingle">
                     <f:entry title="${%Device_ID}" field="deviceId">
                                                         <f:textbox/>
                                             </f:entry>

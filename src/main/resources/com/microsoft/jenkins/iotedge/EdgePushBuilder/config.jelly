@@ -12,7 +12,7 @@
     <f:section title="${%Docker_Configuration}">
         <f:radioBlock name="dockerRegistryType" value="acr" inline="true" title="${%Docker_Registry_ACR}"
                               checked="${ instance.getDockerRegistryType()==null || instance.getDockerRegistryType() == 'acr'}"
-                              help="/${descriptor.descriptorUrl}/help/publishViaFile">
+                              >
             <f:entry title="${%Azure_Credentials}" field="azureCredentialsId">
                 <c:select expressionAllowed="false"/>
             </f:entry>
@@ -26,7 +26,7 @@
 
         <f:radioBlock name="dockerRegistryType" value="common" inline="true" title="${%Docker_Registry_Common}"
                                       checked="${ instance.getDockerRegistryType()==null || instance.getDockerRegistryType() == 'common'}"
-                                      help="/${descriptor.descriptorUrl}/help/publishViaFile">
+                                      >
             <f:entry field="dockerRegistryEndpoint">
                 <f:property propertyDescriptor="${descriptor.dockerRegistryEndpointDescriptor}"/>
             </f:entry>

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class EdgeDeployBuilder extends BaseBuilder {
 
@@ -272,10 +273,14 @@ public class EdgeDeployBuilder extends BaseBuilder {
     @Symbol("azureIoTEdgeDeploy")
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
 
-        public FormValidation doCheckName(@QueryParameter String value, @QueryParameter boolean useFrench)
-                throws IOException, ServletException {
 
-            return FormValidation.ok();
+        public FormValidation doCheckTargetCondition(@QueryParameter String value)
+                throws IOException, ServletException {
+            if(Util.isValidTargetCondition(value)) {
+                return FormValidation.ok();
+            }else {
+                return FormValidation.error("Target condition is not in right format. Click help button to learn more.");
+            }
         }
 
         public DockerRegistryEndpoint.DescriptorImpl getDockerRegistryEndpointDescriptor() {
