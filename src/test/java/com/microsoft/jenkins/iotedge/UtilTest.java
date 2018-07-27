@@ -27,4 +27,14 @@ public class UtilTest {
         Assert.assertFalse(Util.isValidDeploymentId("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"));
         Assert.assertFalse(Util.isValidDeploymentId("ab$cd"));
     }
+
+    @Test
+    public void priorityValidationTest() {
+        Assert.assertTrue(Util.isValidPriority("1"));
+        Assert.assertTrue(Util.isValidPriority("12"));
+        Assert.assertTrue(Util.isValidPriority("0"));
+        Assert.assertFalse(Util.isValidPriority("a1"));
+        Assert.assertFalse(Util.isValidPriority("one"));
+        Assert.assertFalse(Util.isValidPriority("123.4"));
+    }
 }

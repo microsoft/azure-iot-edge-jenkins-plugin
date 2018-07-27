@@ -273,13 +273,21 @@ public class EdgeDeployBuilder extends BaseBuilder {
     @Symbol("azureIoTEdgeDeploy")
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
 
-
         public FormValidation doCheckTargetCondition(@QueryParameter String value)
                 throws IOException, ServletException {
             if(Util.isValidTargetCondition(value)) {
                 return FormValidation.ok();
             }else {
                 return FormValidation.error("Target condition is not in right format. Click help button to learn more.");
+            }
+        }
+
+        public FormValidation doCheckPriority(@QueryParameter String value)
+                throws IOException, ServletException {
+            if(Util.isValidPriority(value)) {
+                return FormValidation.ok();
+            }else {
+                return FormValidation.error("Priority is not in right format. Click help button to learn more.");
             }
         }
 
