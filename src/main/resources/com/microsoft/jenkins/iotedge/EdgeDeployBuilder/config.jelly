@@ -22,7 +22,7 @@
                                                         <f:textbox/>
                                             </f:entry>
         <f:entry title="${%Priority}" field="priority">
-                                                                <f:textbox/>
+                                                                <f:textbox default="${descriptor.defaultPriority}"/>
                                                     </f:entry>
         <f:radioBlock name="deploymentType" value="multiple" inline="true" title="${%Deployment_Multiple}"
                                       checked="${ instance.getDeploymentType()==null || instance.getDeploymentType() == 'multiple'}"

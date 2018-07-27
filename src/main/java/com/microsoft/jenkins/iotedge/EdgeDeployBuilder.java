@@ -272,6 +272,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
     @Extension
     @Symbol("azureIoTEdgeDeploy")
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
+        public static final String defaultPriority = "10";
 
         public FormValidation doCheckTargetCondition(@QueryParameter String value)
                 throws IOException, ServletException {
