@@ -80,7 +80,6 @@ public class ShellExecuter {
 
     private ExitResult executeCommand(String command) {
 
-
         StringBuffer output = new StringBuffer();
         Map<String, String> envs = System.getenv();
         String[] stringEnvs = new String[envs.size()];
@@ -94,10 +93,21 @@ public class ShellExecuter {
         int exitCode = -1;
         try {
             if (File.pathSeparatorChar == ':') {
-                p = Runtime.getRuntime().exec("/bin/sh -c \"" + command + "\"", stringEnvs, workspace);
+                p = Runtime.getRuntime().exec("/bin/sh -c " + command , stringEnvs, workspace);
             } else {
-                p = Runtime.getRuntime().exec("cmd.exe /c \"" + command + "\"", stringEnvs, workspace);
+                p = Runtime.getRuntime().exec("cmd.exe /c " + command , stringEnvs, workspace);
             }
+            // https://stackoverflow.com/a/5483976/5705657
+            // If do not consume the inputstream of the process in advance, then in some situation, process will stuck
+            // on waitFor method.
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream(), "utf-8"));
+
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+
             p.waitFor();
 
             InputStream stream;
@@ -107,13 +117,7 @@ public class ShellExecuter {
             } else {
                 stream = p.getInputStream();
             }
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(stream, "utf-8"));
 
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
             exitCode = p.exitValue();
             reader.close();
 
