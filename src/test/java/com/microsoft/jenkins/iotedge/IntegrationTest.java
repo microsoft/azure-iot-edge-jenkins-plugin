@@ -109,7 +109,69 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: michaeljqzq/jenkins-test-master:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-master:0.0.1-amd64"));
+
+        // Deploy
+        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        int index = s.indexOf("Error");
+        if(index != -1) {
+            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
+        }
+    }
+
+    @Test
+    public void moduleContent() throws Exception {
+        // Prepare
+        String branch = "module-content";
+        FreeStyleProject project = j.createFreeStyleProject();
+        setScmUsingBranch(project, branch);
+
+        String testName = "jenkins-test-"+ branch;
+        String deviceId= testName+"-device";
+
+        EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
+                testEnv.testResourceGroup,
+                "common",
+                dockerRegistryEndpoint,
+                null,
+                "",
+                null);
+
+        project.getBuildersList().add(pushBuilder);
+
+        EdgeDeployBuilder deployBuilder = getDeployBuilderInstance(testEnv.credentialIdAzure,
+                testEnv.testResourceGroup,
+                "single",
+                deviceId,
+                null,
+                testName,
+                "0",
+                null);
+        project.getBuildersList().add(deployBuilder);
+
+        // Test
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        System.out.println(build.getDisplayName() + " completed");
+
+        // Verify
+        String s = FileUtils.readFileToString(build.getLogFile());
+        System.out.println(s);
+
+        // Result of build
+        assertEquals(build.getResult(), Result.SUCCESS);
+        assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
+
+        // Load env
+        assertThat(s, CoreMatchers.containsString("Environment Variables loaded from: .env"));
+
+        // Expand modules
+        assertThat(s, CoreMatchers.not((CoreMatchers.containsString("\"image\": \"${MODULES."))));
+
+        // Push
+        assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
+        assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-master:0.0.1-amd64"));
 
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
@@ -432,7 +494,7 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: michaeljqzq/jenkins-test-"+envValue+":0.0.1"+envValue+"-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-"+envValue+":0.0.1"+envValue+"-amd64"));
 
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
@@ -505,13 +567,18 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: michaeljqzq/jenkins-test-master:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.dockerUrl+"/jenkins-test-mm:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.acrName+".azurecr.io/jenkins-test-mm-cs:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.acrName+".azurecr.io/jenkins-test-mm:0.0.1-amd64"));
         // 3 modules
 
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
-        // credential
+
+        // Credential expand
+        assertThat(s, CoreMatchers.containsString("\"address\": \""+ testEnv.dockerUrl+"\","));
+        assertThat(s, CoreMatchers.containsString("\"address\": \""+ testEnv.acrName+".azurecr.io\","));
         int index = s.indexOf("Error");
         if(index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
@@ -590,7 +657,8 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: michaeljqzq/jenkins-test-master:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-subfolder:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.acrName+".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
 
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
@@ -796,18 +864,6 @@ public class IntegrationTest {
             }
         }
     }
-
-//    protected static void setEnv2(String key, String value) throws Exception {
-//        Class pe = Class.forName("java.lang.ProcessEnvironment");
-//        Method getenv = pe.getDeclaredMethod("getenv");
-//        getenv.setAccessible(true);
-//        Object unmodifiableEnvironment = getenv.invoke(null);
-//        Class map = Class.forName("java.util.Collections$UnmodifiableMap");
-//        Field m = map.getDeclaredField("m");
-//        m.setAccessible(true);
-//        Map envMap = (Map) m.get(unmodifiableEnvironment);
-//        envMap.put(key, value);
-//    }
 
     public void setScmUsingBranch(Project project, String branch) throws IOException {
         GitSCM scm = new GitSCM(GitSCM.createRepoList(testEnv.solutionRepository, (String)null), Collections.singletonList(new BranchSpec("*/"+branch)), Boolean.valueOf(false), new ArrayList<SubmoduleConfig>(){}, (GitRepositoryBrowser)null, (String)null, new ArrayList<GitSCMExtension>(){});
