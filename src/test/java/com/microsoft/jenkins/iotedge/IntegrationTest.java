@@ -44,6 +44,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.doAnswer;
 
 /**
@@ -114,6 +115,69 @@ public class IntegrationTest {
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        int index = s.indexOf("Error");
+        if(index != -1) {
+            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
+        }
+    }
+
+    @Test
+    public void platform() throws Exception {
+        // Prepare
+        String branch = "platform";
+        FreeStyleProject project = j.createFreeStyleProject();
+        setScmUsingBranch(project, branch);
+
+        String testName = "jenkins-test-"+ branch;
+        String deviceId= testName+"-device";
+
+        EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
+                testEnv.testResourceGroup,
+                "common",
+                dockerRegistryEndpoint,
+                null,
+                "",
+                null);
+
+        project.getBuildersList().add(pushBuilder);
+
+        EdgeDeployBuilder deployBuilder = getDeployBuilderInstance(testEnv.credentialIdAzure,
+                testEnv.testResourceGroup,
+                "single",
+                deviceId,
+                null,
+                testName,
+                "0",
+                null);
+        project.getBuildersList().add(deployBuilder);
+
+        // Test
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        System.out.println(build.getDisplayName() + " completed");
+
+        // Verify
+        String s = FileUtils.readFileToString(build.getLogFile());
+        System.out.println(s);
+
+        // Result of build
+        assertEquals(build.getResult(), Result.SUCCESS);
+        assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
+
+        // Load env
+        assertThat(s, CoreMatchers.containsString("Environment Variables loaded from: .env"));
+
+        // Expand modules
+        assertThat(s, CoreMatchers.not((CoreMatchers.containsString("\"image\": \"${MODULES."))));
+
+        // Push
+        assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
+        assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-platform:0.0.1-arm32v7"));
+
+        // Deploy
+        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        assertThat(s, CoreMatchers.containsString("\"image\": \""+testEnv.dockerUrl+"/jenkins-test-platform:0.0.1-arm32v7\""));
         int index = s.indexOf("Error");
         if(index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
@@ -282,60 +346,62 @@ public class IntegrationTest {
         assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
     }
 
-//    @Test
-//    public void errorBreakManifest() throws Exception {
-//        // Prepare
-//        String branch = "error-break-manifest";
-//        FreeStyleProject project = j.createFreeStyleProject();
-//        setScmUsingBranch(project, branch);
-//
-//        String testName = "jenkins-test-"+ branch;
-//        String deviceId= testName+"-device";
-//
-//        EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
-//                testEnv.testResourceGroup,
-//                "common",
-//                dockerRegistryEndpoint,
-//                null,
-//                "");
-//
-//        project.getBuildersList().add(pushBuilder);
-//
-//        EdgeDeployBuilder deployBuilder = getDeployBuilderInstance(testEnv.credentialIdAzure,
-//                testEnv.testResourceGroup,
-//                "single",
-//                deviceId,
-//                null,
-//                testName,
-//                "0"
-//        );
-//
-//        // Test
-//        FreeStyleBuild build = project.scheduleBuild2(0).get();
-//        System.out.println(build.getDisplayName() + " completed");
-//
-//        // Verify
-//        String s = FileUtils.readFileToString(build.getLogFile());
-//        System.out.println(s);
-//
-//        // Result of build
-////        assertEquals(build.getResult(), Result.FAILURE);
-////        assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
-//
-//        project.getBuildersList().remove(pushBuilder);
-//        project.getBuildersList().add(deployBuilder);
-//
-//        build = project.scheduleBuild2(0).get();
-//        System.out.println(build.getDisplayName() + " completed");
-//
-//        // Verify
-//        s = FileUtils.readFileToString(build.getLogFile());
-//        System.out.println(s);
-//
-//        // Result of build
-//        assertEquals(build.getResult(), Result.FAILURE);
-//        assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
-//    }
+    @Test
+    public void errorBreakManifest() throws Exception {
+        // Prepare
+        String branch = "error-break-manifest";
+        FreeStyleProject project = j.createFreeStyleProject();
+        setScmUsingBranch(project, branch);
+
+        String testName = "jenkins-test-"+ branch;
+        String deviceId= testName+"-device";
+
+        EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
+                testEnv.testResourceGroup,
+                "common",
+                dockerRegistryEndpoint,
+                null,
+                "",
+                "./");
+
+        project.getBuildersList().add(pushBuilder);
+
+        EdgeDeployBuilder deployBuilder = getDeployBuilderInstance(testEnv.credentialIdAzure,
+                testEnv.testResourceGroup,
+                "single",
+                deviceId,
+                null,
+                testName,
+                "0",
+                "./"
+        );
+
+        // Test
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        System.out.println(build.getDisplayName() + " completed");
+
+        // Verify
+        String s = FileUtils.readFileToString(build.getLogFile());
+        System.out.println(s);
+
+        // Result of build
+        assertEquals(build.getResult(), Result.FAILURE);
+        assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
+
+        project.getBuildersList().remove(pushBuilder);
+        project.getBuildersList().add(deployBuilder);
+
+        build = project.scheduleBuild2(0).get();
+        System.out.println(build.getDisplayName() + " completed");
+
+        // Verify
+        s = FileUtils.readFileToString(build.getLogFile());
+        System.out.println(s);
+
+        // Result of build
+        assertEquals(build.getResult(), Result.FAILURE);
+        assertThat(s, CoreMatchers.containsString("JSONObject[\"properties.desired\"] not found."));
+    }
 
     @Test
     public void errorMissingDockerfile() throws Exception {
@@ -367,6 +433,7 @@ public class IntegrationTest {
 
         // Result of build
         assertEquals(build.getResult(), Result.FAILURE);
+        assertThat(s, CoreMatchers.containsString("Cannot locate specified Dockerfile: Dockerfile"));
     }
 
     @Test
@@ -663,6 +730,9 @@ public class IntegrationTest {
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        assertThat(s, CoreMatchers.containsString("\"image\": \""+testEnv.dockerUrl+"/jenkins-test-subfolder:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("\"image\": \""+testEnv.acrName+".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
+
         int index = s.indexOf("Error");
         if(index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
