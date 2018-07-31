@@ -12,6 +12,8 @@ import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.ResourceGroup;
 import com.microsoft.azure.util.AzureBaseCredentials;
+import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient;
+import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClientFactory;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import hudson.model.AbstractProject;

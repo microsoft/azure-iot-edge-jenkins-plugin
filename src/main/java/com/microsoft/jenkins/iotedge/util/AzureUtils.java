@@ -11,6 +11,7 @@ import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.azure.util.AzureCredentialUtil;
 import com.microsoft.jenkins.azurecommons.core.AzureClientFactory;
 import com.microsoft.jenkins.azurecommons.core.credentials.TokenCredentialData;
+import com.microsoft.jenkins.iotedge.AzureIoTEdgePlugin;
 import hudson.model.Item;
 
 public final class AzureUtils {
@@ -31,7 +32,7 @@ public final class AzureUtils {
             public Azure.Configurable configure(Azure.Configurable configurable) {
                 return configurable
                         .withLogLevel(Constants.DEFAULT_AZURE_SDK_LOGGING_LEVEL)
-//                        .withInterceptor(new AzureAppServicePlugin.AzureTelemetryInterceptor())
+                        .withInterceptor(new AzureIoTEdgePlugin.AzureTelemetryInterceptor())
                         .withUserAgent(AzureClientFactory.getUserAgent(Constants.PLUGIN_NAME,
                                 AzureUtils.class.getPackage().getImplementationVersion()));
             }

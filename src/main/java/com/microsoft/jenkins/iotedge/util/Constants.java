@@ -50,17 +50,15 @@ public final class Constants {
     /**
      * AI constants.
      */
-    public static final String AI_WEB_APP = "WebApp";
-    public static final String AI_FUNCTIONS = "Functions";
-    public static final String AI_START_DEPLOY = "StartDeploy";
-    public static final String AI_GIT_DEPLOY = "GitDeploy";
-    public static final String AI_GIT_DEPLOY_FAILED = "GitDeployFailed";
-    public static final String AI_FTP_DEPLOY = "FTPDeploy";
-    public static final String AI_FTP_DEPLOY_FAILED = "GitDeployFailed";
-    public static final String AI_WAR_DEPLOY = "WarDeploy";
-    public static final String AI_WAR_DEPLOY_FAILED = "WarDeployFailed";
-    public static final String AI_DOCKER_DEPLOY = "DockerDeploy";
-    public static final String AI_DOCKER_DEPLOY_FAILED = "DockerDeployFailed";
-    public static final String AI_DOCKER_PUSH = "Push";
-    public static final String AI_DOCKER_PUSH_FAILED = "PushFailed";
+    public static final String TELEMETRY_KEY_TEAM_PROJECT = "hashTeamProjectId";
+    public static final String TELEMETRY_KEY_OS_TYPE = "osType";
+    public static final String TELEMETRY_KEY_BUILD_ID = "buildId";
+    public static final String TELEMETRY_KEY_TASK_TYPE = "taskType";
+    public static final String TELEMETRY_KEY_SUCCESS = "isSuccess";
+    public static final String TELEMETRY_KEY_TASK_TIME = "taskTime";
+
+
+    public static final String TELEMETRY_VALUE_TASK_TYPE_PUSH = "Build and Push";
+    public static final String TELEMETRY_VALUE_TASK_TYPE_DEPLOY = "Deploy";
+
 }

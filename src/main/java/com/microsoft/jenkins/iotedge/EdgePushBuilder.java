@@ -108,6 +108,7 @@ public class EdgePushBuilder extends BaseBuilder {
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
+        AzureIoTEdgePlugin.sendEvent("a","b", EdgePushBuilder.class, true, 123, workspace.toString(), run.getId());
         boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
         listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
         String url = "", username = "", password = "";
