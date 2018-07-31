@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -120,49 +121,6 @@ public class EdgeDeployBuilder extends BaseBuilder {
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
 
-
-        // Get deployment manifest
-//        File templateFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_MANIFEST_FILENAME).toString());
-//        if(!templateFile.exists() || !templateFile.isFile()) {
-//            listener.getLogger().println("Can not find deployment manifest. Make sure "+Constants.EDGE_DEPLOYMENT_MANIFEST_FILENAME+" is under the root of solution");
-//            run.setResult(Result.FAILURE);
-//            return;
-//        }
-//
-//        try {
-//            InputStream stream = new FileInputStream(templateFile);
-//            JSONObject templateJson = new JSONObject(IOUtils.toString(stream, "UTF-8"));
-//            JSONObject modulesJson = templateJson.getJSONObject("moduleContent").getJSONObject("$edgeAgent").getJSONObject("properties.desired").getJSONObject("modules");
-//            JSONArray moduleKeys = modulesJson.names();
-//            for (int i = 0; i < moduleKeys.length(); i++) {
-//                String k = moduleKeys.getString(i);
-//                JSONObject v = modulesJson.getJSONObject(k);
-//                String image = v.getJSONObject("settings").getString("image");
-//                Matcher m = Pattern.compile("\\$\\{MODULES\\." + k + "\\.(.*)\\}$").matcher(image);
-//                if (m.find()) {
-//                    String platform = m.group(1);
-//                    File moduleConfigFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_MODULES_FOLDERNAME, k, Constants.EDGE_MODULE_CONFIG_FILENAME).toString());
-//                    if (!moduleConfigFile.exists() || !moduleConfigFile.isFile()) {
-//                        listener.getLogger().println("Module: " + k + " do not have module.json, skip.");
-//                        continue;
-//                    }
-//                    InputStream tstream = new FileInputStream(moduleConfigFile);
-//                    JSONObject moduleJson = new JSONObject(IOUtils.toString(tstream, "UTF-8"));
-//                    String repository = moduleJson.getJSONObject("image").getString("repository");
-//                    String version = moduleJson.\getJSONObject("image").getJSONObject("tag").getString("version");
-//                    String concatImage = (repository + ":" + version + "-" + platform).toLowerCase();
-//                    v.getJSONObject("settings").put("image", concatImage);
-//                }
-//            }
-//            File outputFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME).toString());
-//            PrintWriter writer = new PrintWriter(outputFile);
-//            writer.write(templateJson.toString());
-//        }
-//        catch(JSONException jsonException) {
-//            listener.getLogger().println(jsonException.getMessage());
-//            run.setResult(Result.FAILURE);
-//        }
-
         // Get deployment.json using iotedgedev
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
@@ -194,7 +152,16 @@ public class EdgeDeployBuilder extends BaseBuilder {
         }
         credentialFile.delete();
         if (credentialMap.size() != 0) {
-            JSONObject settings = deploymentJson.getJSONObject("moduleContent")
+            JSONObject moduleContents = null;
+            if(deploymentJson.has("modulesContent")) {
+                moduleContents = deploymentJson.getJSONObject("modulesContent");
+            }else if (deploymentJson.has("moduleContent")) {
+                // Backward compatible for old pattern
+                moduleContents = deploymentJson.getJSONObject("moduleContent");
+            }else {
+                throw new JSONException("moduleContent or modulesContent not found");
+            }
+            JSONObject settings = moduleContents
                     .getJSONObject("$edgeAgent")
                     .getJSONObject("properties.desired")
                     .getJSONObject("runtime")
