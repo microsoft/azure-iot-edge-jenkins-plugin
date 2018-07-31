@@ -118,6 +118,14 @@ public class ShellExecuter {
                 stream = p.getInputStream();
             }
 
+            reader =
+                    new BufferedReader(new InputStreamReader(stream, "utf-8"));
+
+            line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+
             exitCode = p.exitValue();
             reader.close();
 
