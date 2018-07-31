@@ -66,8 +66,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -110,13 +110,13 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-master:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.dockerUrl + "/jenkins-test-master:0.0.1-amd64"));
 
         // Deploy
-        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
-        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
         int index = s.indexOf("Error");
-        if(index != -1) {
+        if (index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
         }
     }
@@ -128,8 +128,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -172,14 +172,14 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-platform:0.0.1-arm32v7"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.dockerUrl + "/jenkins-test-platform:0.0.1-arm32v7"));
 
         // Deploy
-        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
-        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
-        assertThat(s, CoreMatchers.containsString("\"image\": \""+testEnv.dockerUrl+"/jenkins-test-platform:0.0.1-arm32v7\""));
+        assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
+        assertThat(s, CoreMatchers.containsString("\"image\": \"" + testEnv.dockerUrl + "/jenkins-test-platform:0.0.1-arm32v7\""));
         int index = s.indexOf("Error");
-        if(index != -1) {
+        if (index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
         }
     }
@@ -191,8 +191,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -235,13 +235,13 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-master:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.dockerUrl + "/jenkins-test-master:0.0.1-amd64"));
 
         // Deploy
-        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
-        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
         int index = s.indexOf("Error");
-        if(index != -1) {
+        if (index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
         }
     }
@@ -253,8 +253,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -296,8 +296,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -353,8 +353,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -410,8 +410,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -443,8 +443,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -477,8 +477,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -516,8 +516,8 @@ public class IntegrationTest {
         setEnv(envs);
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -561,14 +561,14 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-"+envValue+":0.0.1"+envValue+"-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.dockerUrl + "/jenkins-test-" + envValue + ":0.0.1" + envValue + "-amd64"));
 
         // Deploy
-        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
-        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
-        assertThat(s, CoreMatchers.containsString("\"customValue\": \""+envValue+"\""));
+        assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
+        assertThat(s, CoreMatchers.containsString("\"customValue\": \"" + envValue + "\""));
         int index = s.indexOf("Error");
-        if(index != -1) {
+        if (index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
         }
     }
@@ -580,8 +580,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -634,20 +634,20 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.dockerUrl+"/jenkins-test-mm:0.0.1-amd64"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.acrName+".azurecr.io/jenkins-test-mm-cs:0.0.1-amd64"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.acrName+".azurecr.io/jenkins-test-mm:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.dockerUrl + "/jenkins-test-mm:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.acrName + ".azurecr.io/jenkins-test-mm-cs:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.acrName + ".azurecr.io/jenkins-test-mm:0.0.1-amd64"));
         // 3 modules
 
         // Deploy
-        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
-        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
+        assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
 
         // Credential expand
-        assertThat(s, CoreMatchers.containsString("\"address\": \""+ testEnv.dockerUrl+"\","));
-        assertThat(s, CoreMatchers.containsString("\"address\": \""+ testEnv.acrName+".azurecr.io\","));
+        assertThat(s, CoreMatchers.containsString("\"address\": \"" + testEnv.dockerUrl + "\","));
+        assertThat(s, CoreMatchers.containsString("\"address\": \"" + testEnv.acrName + ".azurecr.io\","));
         int index = s.indexOf("Error");
-        if(index != -1) {
+        if (index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
         }
     }
@@ -659,8 +659,8 @@ public class IntegrationTest {
         FreeStyleProject project = j.createFreeStyleProject();
         setScmUsingBranch(project, branch);
 
-        String testName = "jenkins-test-"+ branch;
-        String deviceId= testName+"-device";
+        String testName = "jenkins-test-" + branch;
+        String deviceId = testName + "-device";
 
         EdgePushBuilder pushBuilder = getPushBuilderInstance(testEnv.credentialIdAzure,
                 testEnv.testResourceGroup,
@@ -724,17 +724,17 @@ public class IntegrationTest {
         // Push
         assertThat(s, CoreMatchers.containsString("\"status\":\"The push refers to repository"));
         assertThat(s, CoreMatchers.containsString("PUSH COMPLETE"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+testEnv.dockerUrl+"/jenkins-test-subfolder:0.0.1-amd64"));
-        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: "+ testEnv.acrName+".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.dockerUrl + "/jenkins-test-subfolder:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("PUSHING DOCKER IMAGE: " + testEnv.acrName + ".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
 
         // Deploy
-        assertThat(s, CoreMatchers.containsString("\"id\": \""+testName+"\","));
-        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='"+deviceId+"'\""));
-        assertThat(s, CoreMatchers.containsString("\"image\": \""+testEnv.dockerUrl+"/jenkins-test-subfolder:0.0.1-amd64"));
-        assertThat(s, CoreMatchers.containsString("\"image\": \""+testEnv.acrName+".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
+        assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
+        assertThat(s, CoreMatchers.containsString("\"image\": \"" + testEnv.dockerUrl + "/jenkins-test-subfolder:0.0.1-amd64"));
+        assertThat(s, CoreMatchers.containsString("\"image\": \"" + testEnv.acrName + ".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
 
         int index = s.indexOf("Error");
-        if(index != -1) {
+        if (index != -1) {
             assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
         }
     }
@@ -752,8 +752,8 @@ public class IntegrationTest {
         public final String iotHubName;
         public final String acrName;
         public final String testResourceGroup = "iotedge-jenkins-automation-test";
-        public final String credentialIdDocker= "EDGE_TEST_CREDENTIAL_DOCKER_ID";
-        public final String credentialIdAzure= "EDGE_TEST_CREDENTIAL_AZURE_ID";
+        public final String credentialIdDocker = "EDGE_TEST_CREDENTIAL_DOCKER_ID";
+        public final String credentialIdAzure = "EDGE_TEST_CREDENTIAL_AZURE_ID";
 
 
         TestEnvironment() throws Exception {
@@ -777,8 +777,8 @@ public class IntegrationTest {
 
         private static String loadFromEnv(final String name, boolean allowNull) throws Exception {
             String result = TestEnvironment.loadFromEnv(name, null);
-            if(result == null && !allowNull) {
-                throw new Exception("Env key: "+name+" is missing");
+            if (result == null && !allowNull) {
+                throw new Exception("Env key: " + name + " is missing");
             }
             return result;
         }
@@ -850,7 +850,7 @@ public class IntegrationTest {
     }
 
 
-//    @After
+    //    @After
     public void tearDown() {
         clearAzureResources();
     }
@@ -874,15 +874,15 @@ public class IntegrationTest {
 
     public EdgePushBuilder getPushBuilderInstance(String azureCredentialId, String azureResourceGroup, String dockerRegistryType, DockerRegistryEndpoint dockerEndpoint, String acrName, String bypassModules, String rootPath) {
         EdgePushBuilder pushBuilder;
-        if(rootPath == null) {
+        if (rootPath == null) {
             pushBuilder = new EdgePushBuilder(azureCredentialId, azureResourceGroup);
-        }else {
+        } else {
             pushBuilder = new EdgePushBuilder(azureCredentialId, azureResourceGroup, rootPath);
         }
         pushBuilder.setDockerRegistryType(dockerRegistryType);
-        if(dockerRegistryType == Constants.DOCKER_REGISTRY_TYPE_COMMON) {
+        if (dockerRegistryType == Constants.DOCKER_REGISTRY_TYPE_COMMON) {
             pushBuilder.setDockerRegistryEndpoint(dockerEndpoint);
-        }else {
+        } else {
             pushBuilder.setAcrName(acrName);
         }
         pushBuilder.setBypassModules(bypassModules);
@@ -891,15 +891,15 @@ public class IntegrationTest {
 
     public EdgeDeployBuilder getDeployBuilderInstance(String azureCredentialId, String azureResourceGroup, String deploymentType, String deviceId, String targetCondition, String deploymentId, String priority, String rootPath) {
         EdgeDeployBuilder deployBuilder;
-        if(rootPath == null) {
+        if (rootPath == null) {
             deployBuilder = new EdgeDeployBuilder(azureCredentialId, azureResourceGroup);
-        }else {
+        } else {
             deployBuilder = new EdgeDeployBuilder(azureCredentialId, azureResourceGroup, rootPath);
         }
         deployBuilder.setDeploymentType(deploymentType);
-        if(deploymentType == "single") {
+        if (deploymentType == "single") {
             deployBuilder.setDeviceId(deviceId);
-        }else {
+        } else {
             deployBuilder.setTargetCondition(targetCondition);
         }
         deployBuilder.setDeploymentId(deploymentId);
@@ -917,13 +917,13 @@ public class IntegrationTest {
             env.putAll(newenv);
             Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
             theCaseInsensitiveEnvironmentField.setAccessible(true);
-            Map<String, String> cienv = (Map<String, String>)     theCaseInsensitiveEnvironmentField.get(null);
+            Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
             cienv.putAll(newenv);
         } catch (NoSuchFieldException e) {
             Class[] classes = Collections.class.getDeclaredClasses();
             Map<String, String> env = System.getenv();
-            for(Class cl : classes) {
-                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+            for (Class cl : classes) {
+                if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
                     Field field = cl.getDeclaredField("m");
                     field.setAccessible(true);
                     Object obj = field.get(env);
@@ -936,7 +936,9 @@ public class IntegrationTest {
     }
 
     public void setScmUsingBranch(Project project, String branch) throws IOException {
-        GitSCM scm = new GitSCM(GitSCM.createRepoList(testEnv.solutionRepository, (String)null), Collections.singletonList(new BranchSpec("*/"+branch)), Boolean.valueOf(false), new ArrayList<SubmoduleConfig>(){}, (GitRepositoryBrowser)null, (String)null, new ArrayList<GitSCMExtension>(){});
+        GitSCM scm = new GitSCM(GitSCM.createRepoList(testEnv.solutionRepository, (String) null), Collections.singletonList(new BranchSpec("*/" + branch)), Boolean.valueOf(false), new ArrayList<SubmoduleConfig>() {
+        }, (GitRepositoryBrowser) null, (String) null, new ArrayList<GitSCMExtension>() {
+        });
         project.setScm(scm);
     }
 

@@ -148,9 +148,9 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
 
         public FormValidation doCheckDeploymentId(@QueryParameter String value)
                 throws IOException, ServletException {
-            if(Util.isValidDeploymentId(value)) {
+            if (Util.isValidDeploymentId(value)) {
                 return FormValidation.ok();
-            }else {
+            } else {
                 return FormValidation.error("Deployment ID is not in right format. Click help button to learn more.");
             }
         }

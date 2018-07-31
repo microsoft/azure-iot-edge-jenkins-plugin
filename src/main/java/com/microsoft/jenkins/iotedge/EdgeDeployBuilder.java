@@ -124,7 +124,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         // Get deployment.json using iotedgedev
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
-            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "","","","");
+            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "", "", "", "");
             executer.executeAZ("iotedgedev build", true);
 
         } catch (AzureCloudException e) {
@@ -153,12 +153,12 @@ public class EdgeDeployBuilder extends BaseBuilder {
         credentialFile.delete();
         if (credentialMap.size() != 0) {
             JSONObject moduleContents = null;
-            if(deploymentJson.has("modulesContent")) {
+            if (deploymentJson.has("modulesContent")) {
                 moduleContents = deploymentJson.getJSONObject("modulesContent");
-            }else if (deploymentJson.has("moduleContent")) {
+            } else if (deploymentJson.has("moduleContent")) {
                 // Backward compatible for old pattern
                 moduleContents = deploymentJson.getJSONObject("moduleContent");
-            }else {
+            } else {
                 throw new JSONException("moduleContent or modulesContent not found");
             }
             JSONObject settings = moduleContents
@@ -243,18 +243,18 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
         public FormValidation doCheckTargetCondition(@QueryParameter String value)
                 throws IOException, ServletException {
-            if(Util.isValidTargetCondition(value)) {
+            if (Util.isValidTargetCondition(value)) {
                 return FormValidation.ok();
-            }else {
+            } else {
                 return FormValidation.error("Target condition is not in right format. Click help button to learn more.");
             }
         }
 
         public FormValidation doCheckPriority(@QueryParameter String value)
                 throws IOException, ServletException {
-            if(Util.isValidPriority(value)) {
+            if (Util.isValidPriority(value)) {
                 return FormValidation.ok();
-            }else {
+            } else {
                 return FormValidation.error("Priority is not in right format. Click help button to learn more.");
             }
         }

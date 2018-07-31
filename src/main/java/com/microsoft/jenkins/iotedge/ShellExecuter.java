@@ -84,18 +84,17 @@ public class ShellExecuter {
         Map<String, String> envs = System.getenv();
         String[] stringEnvs = new String[envs.size()];
         int index = 0;
-        for (Map.Entry<String, String> mapEntry : envs.entrySet())
-        {
-            stringEnvs[index++] = mapEntry.getKey()+"="+mapEntry.getValue();
+        for (Map.Entry<String, String> mapEntry : envs.entrySet()) {
+            stringEnvs[index++] = mapEntry.getKey() + "=" + mapEntry.getValue();
         }
 
         Process p;
         int exitCode = -1;
         try {
             if (File.pathSeparatorChar == ':') {
-                p = Runtime.getRuntime().exec("/bin/sh -c " + command , stringEnvs, workspace);
+                p = Runtime.getRuntime().exec("/bin/sh -c " + command, stringEnvs, workspace);
             } else {
-                p = Runtime.getRuntime().exec("cmd.exe /c " + command , stringEnvs, workspace);
+                p = Runtime.getRuntime().exec("cmd.exe /c " + command, stringEnvs, workspace);
             }
             // https://stackoverflow.com/a/5483976/5705657
             // If do not consume the inputstream of the process in advance, then in some situation, process will stuck

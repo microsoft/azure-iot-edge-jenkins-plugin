@@ -40,6 +40,7 @@ public final class Constants {
     public static final String IOTEDGEDEV_ENV_ACTIVE_MODULES = "BYPASS_MODULES";
 
     public static Map<String, String> iotedgedevEnvMap;
+
     static {
         iotedgedevEnvMap = new TreeMap<String, String>();
         iotedgedevEnvMap.put("ACTIVE_MODULES", "*");

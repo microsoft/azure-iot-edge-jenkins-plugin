@@ -18,7 +18,7 @@ public class DockerCredential {
     public String address;
 
     @JsonCreator
-    public DockerCredential(@JsonProperty("username") String username,@JsonProperty("password") String password,@JsonProperty("address") String address) {
+    public DockerCredential(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("address") String address) {
         this.username = username;
         this.password = password;
         this.address = address;
