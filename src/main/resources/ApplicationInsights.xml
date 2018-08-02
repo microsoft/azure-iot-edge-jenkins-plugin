@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationInsights xmlns="http://schemas.microsoft.com/ApplicationInsights/2013/Settings" schemaVersion="2014-05-30">
+
+    <!-- The key from the portal: -->
+    <InstrumentationKey>72516779-4009-45e2-9862-abaabb043081</InstrumentationKey>
+
+</ApplicationInsights>

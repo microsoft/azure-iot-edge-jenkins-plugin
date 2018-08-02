@@ -54,8 +54,12 @@ public final class Constants {
     public static final String TELEMETRY_KEY_OS_TYPE = "osType";
     public static final String TELEMETRY_KEY_BUILD_ID = "buildId";
     public static final String TELEMETRY_KEY_TASK_TYPE = "taskType";
+    public static final String TELEMETRY_KEY_NUM_PUSH = "numOfPushSteps";
+    public static final String TELEMETRY_KEY_NUM_DEPLOY = "numOfDeploySteps";
     public static final String TELEMETRY_KEY_SUCCESS = "isSuccess";
     public static final String TELEMETRY_KEY_TASK_TIME = "taskTime";
+    public static final String TELEMETRY_KEY_COMMON_EXTVERSION = "common.extversion";
+    public static final String TELEMETRY_KEY_COMMON_EXTNAME = "common.extname";
 
 
     public static final String TELEMETRY_VALUE_TASK_TYPE_PUSH = "Build and Push";
