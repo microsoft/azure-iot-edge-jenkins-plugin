@@ -841,6 +841,10 @@ public class IntegrationTest {
         AzureCredentials azureCre = new AzureCredentials(CredentialsScope.GLOBAL, testEnv.credentialIdAzure, "", testEnv.subscriptionId, testEnv.clientId, testEnv.clientSecret);
         azureCre.setTenant(testEnv.tenantId);
         SystemCredentialsProvider.getInstance().getCredentials().add(azureCre);
+
+        HashMap<String,String> testEnvKeyMap = new HashMap<>();
+        testEnvKeyMap.put(Constants.JENKINS_TEST_ENVIRONMENT_ENV_KEY, "true");
+        setEnv(testEnvKeyMap);
     }
 
 

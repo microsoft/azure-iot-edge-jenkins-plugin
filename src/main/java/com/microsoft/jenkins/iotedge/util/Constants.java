@@ -24,6 +24,8 @@ public final class Constants {
     // the first option for select element. Keep the same value as jenkins pre-defined default empty value.
     public static final String EMPTY_SELECTION = "- none -";
 
+    public static final String JENKINS_TEST_ENVIRONMENT_ENV_KEY = "JENKINS_TEST_ENVIRONMENT_ENV_KEY";
+
     public static final String DOCKER_REGISTRY_TYPE_ACR = "acr";
     public static final String DOCKER_REGISTRY_TYPE_COMMON = "common";
 
