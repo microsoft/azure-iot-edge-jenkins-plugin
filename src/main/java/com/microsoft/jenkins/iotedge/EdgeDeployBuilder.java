@@ -200,7 +200,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         try {
             azExecuter.login(credentialCache);
 
-            String scriptToDelete = "az iot edge deployment delete --hub-name \"" + iothubName + "\" --config-id \"" + deploymentId + "\"";
+            String scriptToDelete = "az iot edge deployment delete --hub-name " + iothubName + " --config-id " + deploymentId + "";
             azExecuter.executeAZ(scriptToDelete, true);
         } catch (Exception e) {
             if (!e.getMessage().contains("ConfigurationNotFound")) {
@@ -210,7 +210,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         }
 
         try {
-            String scriptToDeploy = "az iot edge deployment create --config-id \"" + deploymentId + "\" --hub-name \"" + iothubName + "\" --content \"" + deploymentJsonPath + "\" --target-condition \"" + condition + "\" --priority \"" + priority + "\"";
+            String scriptToDeploy = "az iot edge deployment create --config-id " + deploymentId + " --hub-name " + iothubName + " --content " + deploymentJsonPath + " --target-condition " + condition + " --priority " + priority + "";
             executer.executeAZ(scriptToDeploy, true);
         } catch (Exception e) {
             listener.getLogger().println("Failure: " + e.getMessage());
