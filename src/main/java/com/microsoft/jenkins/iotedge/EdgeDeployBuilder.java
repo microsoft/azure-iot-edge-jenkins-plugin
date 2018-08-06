@@ -125,7 +125,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
             writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "", "", "", "");
-            executer.executeAZ("iotedgedev build", true);
+            executer.executeAZ("iotedgedev genconfig", true);
 
         } catch (AzureCloudException e) {
             e.printStackTrace();
