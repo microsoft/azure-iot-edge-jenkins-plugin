@@ -98,7 +98,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.SUCCESS);
+        assertEquals(Result.SUCCESS, build.getResult());
         assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
 
         // Load env
@@ -160,7 +160,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.SUCCESS);
+        assertEquals(Result.SUCCESS, build.getResult());
         assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
 
         // Load env
@@ -223,7 +223,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.SUCCESS);
+        assertEquals(Result.SUCCESS, build.getResult());
         assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
 
         // Load env
@@ -286,7 +286,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
     }
 
     @Test
@@ -328,7 +328,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
 
         project.getBuildersList().remove(pushBuilder);
@@ -342,7 +342,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
     }
 
@@ -385,8 +385,8 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
-        assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
+        assertEquals(Result.FAILURE, build.getResult());
+        assertThat(s, CoreMatchers.containsString("Missing key 'properties.desired' in file deployment.template.json"));
 
         project.getBuildersList().remove(pushBuilder);
         project.getBuildersList().add(deployBuilder);
@@ -399,7 +399,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.containsString("JSONObject[\"properties.desired\"] not found."));
     }
 
@@ -432,7 +432,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.containsString("Cannot locate specified Dockerfile: Dockerfile"));
     }
 
@@ -466,7 +466,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.not((CoreMatchers.containsString("PUSH COMPLETE"))));
     }
 
@@ -500,7 +500,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.FAILURE);
+        assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.containsString("BuildError"));
         assertThat(s, CoreMatchers.not((CoreMatchers.containsString("BUILD COMPLETE"))));
     }
@@ -549,7 +549,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.SUCCESS);
+        assertEquals(Result.SUCCESS, build.getResult());
         assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
 
         // Load env
@@ -622,7 +622,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.SUCCESS);
+        assertEquals(Result.SUCCESS, build.getResult());
         assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
 
         // Load env
@@ -712,7 +712,7 @@ public class IntegrationTest {
         System.out.println(s);
 
         // Result of build
-        assertEquals(build.getResult(), Result.SUCCESS);
+        assertEquals(Result.SUCCESS, build.getResult());
         assertThat(s, CoreMatchers.containsString("BUILD COMPLETE"));
 
         // Load env
