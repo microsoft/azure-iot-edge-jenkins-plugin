@@ -216,7 +216,7 @@ public class EdgePushBuilder extends BaseBuilder {
 
         @Override
         public String getDisplayName() {
-            return "Azure IoT Edge Push";
+            return "Azure IoT Edge Build and Push";
         }
 
     }
