@@ -92,7 +92,7 @@ public class ShellExecuter {
         int exitCode = -1;
         try {
             if (File.pathSeparatorChar == ':') {
-                p = Runtime.getRuntime().exec("/bin/sh -c \"" + command + "\"", stringEnvs, workspace);
+                p = Runtime.getRuntime().exec(command , stringEnvs, workspace);
             } else {
                 p = Runtime.getRuntime().exec("cmd.exe /c " + command, stringEnvs, workspace);
             }
