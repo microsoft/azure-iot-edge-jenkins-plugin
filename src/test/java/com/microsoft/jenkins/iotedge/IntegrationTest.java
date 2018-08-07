@@ -27,8 +27,6 @@ import org.jenkinsci.plugins.docker.commons.credentials.DockerRegistryEndpoint;
 import org.junit.*;
 import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,10 +40,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.Mockito.doAnswer;
 
 /**
  * Created by zhqqi on 7/23/2018.
@@ -967,32 +961,5 @@ public class IntegrationTest {
         public String getMessage() {
             return msg;
         }
-    }
-
-    protected void setUpBaseCommandMockErrorHandling(IBaseCommandData commandDataMock) {
-
-        doAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                throw (Exception) args[0];
-            }
-        }).when(commandDataMock).logError(any(Exception.class));
-
-        doAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                throw (Exception) args[1];
-            }
-        }).when(commandDataMock).logError(anyString(), any(Exception.class));
-
-        doAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                Object[] args = invocation.getArguments();
-                throw new CommandErrorException((String) args[0]);
-            }
-        }).when(commandDataMock).logError(anyString());
     }
 }

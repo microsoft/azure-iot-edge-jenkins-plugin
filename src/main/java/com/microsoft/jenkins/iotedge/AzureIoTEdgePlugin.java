@@ -10,7 +10,6 @@ import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient;
 import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClientFactory;
 import com.microsoft.jenkins.azurecommons.telemetry.AzureHttpRecorder;
 import com.microsoft.jenkins.iotedge.util.Constants;
-import com.sun.xml.bind.v2.runtime.reflect.opt.Const;
 import hudson.Plugin;
 import okhttp3.Interceptor;
 import okhttp3.Request;
