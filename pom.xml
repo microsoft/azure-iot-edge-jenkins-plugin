@@ -134,14 +134,13 @@
         </dependency>
     </dependencies>
 
-    <!-- If you want this to appear on the wiki page:
     <developers>
       <developer>
-        <id>bhacker</id>
-        <name>Bob Q. Hacker</name>
-        <email>bhacker@nowhere.net</email>
+        <id>azure_iotedge_tooling</id>
+        <name>Azure IoT Edge Tooling Team</name>
+        <email>vsciet@microsoft.com</email>
       </developer>
-    </developers> -->
+    </developers>
 
     <!-- Assuming you want to host on @jenkinsci:
     <url>https://wiki.jenkins.io/display/JENKINS/TODO+Plugin</url>
