@@ -323,7 +323,7 @@ public class IntegrationTest {
 
         // Result of build
         assertEquals(Result.FAILURE, build.getResult());
-        assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
+        assertThat(s, CoreMatchers.containsString("Deployment manifest file \"deployment.template.json\" not found"));
 
         project.getBuildersList().remove(pushBuilder);
         project.getBuildersList().add(deployBuilder);
@@ -337,7 +337,7 @@ public class IntegrationTest {
 
         // Result of build
         assertEquals(Result.FAILURE, build.getResult());
-        assertThat(s, CoreMatchers.containsString("Unable to find config files in solution root directory"));
+        assertThat(s, CoreMatchers.containsString("Deployment manifest file \"deployment.template.json\" not found"));
     }
 
     @Test
@@ -381,20 +381,6 @@ public class IntegrationTest {
         // Result of build
         assertEquals(Result.FAILURE, build.getResult());
         assertThat(s, CoreMatchers.containsString("Missing key 'properties.desired' in file deployment.template.json"));
-
-        project.getBuildersList().remove(pushBuilder);
-        project.getBuildersList().add(deployBuilder);
-
-        build = project.scheduleBuild2(0).get();
-        System.out.println(build.getDisplayName() + " completed");
-
-        // Verify
-        s = FileUtils.readFileToString(build.getLogFile());
-        System.out.println(s);
-
-        // Result of build
-        assertEquals(Result.FAILURE, build.getResult());
-        assertThat(s, CoreMatchers.containsString("JSONObject[\"properties.desired\"] not found."));
     }
 
     @Test
@@ -495,7 +481,7 @@ public class IntegrationTest {
 
         // Result of build
         assertEquals(Result.FAILURE, build.getResult());
-        assertThat(s, CoreMatchers.containsString("BuildError"));
+        assertThat(s, CoreMatchers.containsString("Error"));
         assertThat(s, CoreMatchers.not((CoreMatchers.containsString("BUILD COMPLETE"))));
     }
 
