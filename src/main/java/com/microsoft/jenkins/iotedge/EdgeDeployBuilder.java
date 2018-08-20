@@ -124,7 +124,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         // Get deployment.json using iotedgedev
         ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
         try {
-            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "", "", "", "");
+            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "michaeljqzq", "", "", "");
             executer.executeAZ("iotedgedev genconfig", true);
 
         } catch (AzureCloudException e) {
@@ -216,24 +216,6 @@ public class EdgeDeployBuilder extends BaseBuilder {
             listener.getLogger().println("Failure: " + e.getMessage());
             run.setResult(Result.FAILURE);
         }
-    }
-
-    // TODO: remove this
-    private void writeEnvFile(String path, String url, String username, String password, String bypassModules) {
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(path, "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        writer.println(Env.EnvString);
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\"" + username + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\"" + password + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
-        writer.close();
     }
 
     @Extension

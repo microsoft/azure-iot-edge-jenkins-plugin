@@ -16,6 +16,7 @@ import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient;
 import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClientFactory;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
+import com.microsoft.jenkins.iotedge.util.Env;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.security.ACL;
@@ -29,7 +30,10 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     public String getAzureCredentialsId() {
@@ -74,6 +78,23 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
         this.azureCredentialsId = azureCredentialsId;
         this.resourceGroup = resourceGroup;
         this.rootPath = DescriptorImpl.defaultRootPath;
+    }
+
+    protected void writeEnvFile(String path, String url, String username, String password, String bypassModules) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(path, "UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        writer.println(Env.EnvString);
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\"" + username + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\"" + password + "\"");
+        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
+        writer.close();
     }
 
     @Override

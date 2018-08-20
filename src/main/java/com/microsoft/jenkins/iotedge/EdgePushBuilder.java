@@ -154,23 +154,6 @@ public class EdgePushBuilder extends BaseBuilder {
         }
     }
 
-    private void writeEnvFile(String path, String url, String username, String password, String bypassModules) {
-        PrintWriter writer = null;
-        try {
-            writer = new PrintWriter(path, "UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        writer.println(Env.EnvString);
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\"" + username + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\"" + password + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
-        writer.close();
-    }
-
     @Extension
     @Symbol("azureIoTEdgePush")
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
