@@ -5,8 +5,8 @@ Do Not Translate or Localize
 The azure-iot-edge-jenkins-plugin incorporates third party material from the projects listed below.
 
 
-1.	azure-commons (https://plugins.jenkins.io/azure-commons)
-2.	azure-commons-core  (https://github.com/jenkinsci/azure-commons-plugin/tree/dev/azure-commons-core)
+1.	azure-commons (https://mvnrepository.com/artifact/org.jenkins-ci.plugins/azure-commons)
+2.	azure-commons-core  (https://mvnrepository.com/artifact/org.jenkins-ci.plugins/azure-commons-core)
 3.	azure-credentials (https://plugins.jenkins.io/azure-credentials)
 4.	docker commons (https://plugins.jenkins.io/docker-commons)
 5.	docker-java (https://repo1.maven.org/maven2/com/github/docker-java/docker-java/)
