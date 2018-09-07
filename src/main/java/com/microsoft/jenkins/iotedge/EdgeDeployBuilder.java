@@ -201,7 +201,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
                                 url = cred.url;
                             }
                         }
-                        JSONObject updatedCredential = new JSONObject("{'username':'" + username + "','password':'" + password + "','url':'" + url + "'}");
+                        JSONObject updatedCredential = new JSONObject("{'username':'" + username + "','password':'" + password + "','address':'" + url + "'}");
                         registryCredentials.put(keys.getString(i), updatedCredential);
                     }   
                 }
