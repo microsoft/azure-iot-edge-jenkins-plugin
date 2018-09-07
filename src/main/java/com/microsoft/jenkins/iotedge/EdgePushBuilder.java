@@ -109,11 +109,13 @@ public class EdgePushBuilder extends BaseBuilder {
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
+        String credentialId = null;
         listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
         String url = "", username = "", password = "";
 
         if (isAcr) {
-            final Azure azureClient = AzureUtils.buildClient(run.getParent(), getAzureCredentialsId());
+            credentialId = getAzureCredentialsId();
+            final Azure azureClient = AzureUtils.buildClient(run.getParent(), credentialId);
             Registries rs = azureClient.containerRegistries();
             Registry r = rs.getByResourceGroup(getResourceGroup(), acrName);
             RegistryCredentials rc = r.getCredentials();
@@ -122,7 +124,7 @@ public class EdgePushBuilder extends BaseBuilder {
             password = rc.accessKeys().get(AccessKeyType.PRIMARY);
         } else {
             url = dockerRegistryEndpoint.getUrl();
-            String credentialId = dockerRegistryEndpoint.getCredentialsId();
+            credentialId = dockerRegistryEndpoint.getCredentialsId();
             StandardUsernamePasswordCredentials credential = CredentialsProvider.findCredentialById(credentialId, StandardUsernamePasswordCredentials.class, run);
             if (credential != null) {
                 username = credential.getUsername();
@@ -141,7 +143,7 @@ public class EdgePushBuilder extends BaseBuilder {
             credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>() {
             });
         }
-        DockerCredential dockerCredential = new DockerCredential(username, password, url);
+        DockerCredential dockerCredential = new DockerCredential(credentialId, isAcr, isAcr ? acrName : url);
         credentialMap.put(url, dockerCredential);
         mapper.writeValue(credentialFile, credentialMap);
 

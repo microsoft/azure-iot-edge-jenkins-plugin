@@ -6,12 +6,20 @@
 
 package com.microsoft.jenkins.iotedge;
 
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.azure.management.Azure;
+import com.microsoft.azure.management.containerregistry.AccessKeyType;
+import com.microsoft.azure.management.containerregistry.Registries;
+import com.microsoft.azure.management.containerregistry.Registry;
+import com.microsoft.azure.management.containerregistry.RegistryCredentials;
 import com.microsoft.azure.util.AzureCredentials;
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.model.DockerCredential;
+import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import com.microsoft.jenkins.iotedge.util.Env;
 import hudson.Extension;
@@ -172,11 +180,29 @@ public class EdgeDeployBuilder extends BaseBuilder {
                 List<DockerCredential> credentialList = new ArrayList<>(credentialMap.values());
                 int index = 0;
                 for (int i = 0; i < keys.length(); i++) {
-                    JSONObject credential = registryCredentials.getJSONObject(keys.getString(i));
-                    if (credential.has("username") && credential.getString("username").startsWith("$") && index < credentialList.size()) {
-                        JSONObject updatedCredential = new JSONObject(mapper.valueToTree(credentialList.get(index++)).toString());
+                    JSONObject credentialObject = registryCredentials.getJSONObject(keys.getString(i));
+                    if (credentialObject.has("username") && credentialObject.getString("username").startsWith("$") && index < credentialList.size()) {
+                        DockerCredential cred = credentialList.get(index++);
+                        String url = "", username = "", password = "";
+                        if (cred.isAcr) {
+                            final Azure azureClient = AzureUtils.buildClient(run.getParent(), cred.credentialId);
+                            Registries rs = azureClient.containerRegistries();
+                            Registry r = rs.getByResourceGroup(getResourceGroup(), cred.url);
+                            RegistryCredentials rc = r.getCredentials();
+                            username = rc.username();
+                            url = r.loginServerUrl();
+                            password = rc.accessKeys().get(AccessKeyType.PRIMARY);
+                        } else {
+                            StandardUsernamePasswordCredentials credential = CredentialsProvider.findCredentialById(cred.credentialId, StandardUsernamePasswordCredentials.class, run);
+                            if (credential != null) {
+                                username = credential.getUsername();
+                                password = credential.getPassword().getPlainText();
+                                url = cred.url;
+                            }
+                        }
+                        JSONObject updatedCredential = new JSONObject("{'username':'" + username + "','password':'" + password + "','url':'" + url + "'}");
                         registryCredentials.put(keys.getString(i), updatedCredential);
-                    }
+                    }   
                 }
             }
         }
