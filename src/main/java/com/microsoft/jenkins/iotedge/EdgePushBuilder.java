@@ -133,9 +133,9 @@ public class EdgePushBuilder extends BaseBuilder {
         }
 
         // Generate .env file for iotedgedev use
-        writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), url, username, password, bypassModules);
+        writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), url, bypassModules);
 
-        // Save docker credential to a file
+        // Save docker credential id to a file
         ObjectMapper mapper = new ObjectMapper();
         Map<String, DockerCredential> credentialMap = new HashMap<>();
         File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
@@ -149,7 +149,10 @@ public class EdgePushBuilder extends BaseBuilder {
 
         ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
         try {
-            executer.executeAZ("iotedgedev.exe push", true);
+            Map<String, String> envs = new HashMap<>();
+            envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME, username);
+            envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD, password);
+            executer.executeAZ("iotedgedev.exe push", true, envs);
         } catch (AzureCloudException e) {
             e.printStackTrace();
             throw new AbortException(e.getMessage());

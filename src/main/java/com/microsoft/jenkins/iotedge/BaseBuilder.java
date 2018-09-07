@@ -80,7 +80,7 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
         this.rootPath = DescriptorImpl.defaultRootPath;
     }
 
-    protected void writeEnvFile(String path, String url, String username, String password, String bypassModules) {
+    protected void writeEnvFile(String path, String url, String bypassModules) {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(path, "UTF-8");
@@ -91,8 +91,6 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
         }
         writer.println(Env.EnvString);
         writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME + "=\"" + username + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD + "=\"" + password + "\"");
         writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
         writer.close();
     }

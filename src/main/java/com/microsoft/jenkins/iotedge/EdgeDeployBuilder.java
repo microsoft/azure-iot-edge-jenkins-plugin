@@ -132,7 +132,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         // Get deployment.json using iotedgedev
         ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
         try {
-            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "michaeljqzq", "", "", "");
+            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(),  "", "");
             executer.executeAZ("iotedgedev genconfig", true);
 
         } catch (AzureCloudException e) {
