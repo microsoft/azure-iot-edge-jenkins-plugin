@@ -122,7 +122,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
 
         // Get deployment.json using iotedgedev
-        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
+        ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
         try {
             writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "michaeljqzq", "", "", "");
             executer.executeAZ("iotedgedev genconfig", true);
@@ -196,7 +196,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         }
         AzureCredentials.ServicePrincipal servicePrincipal = AzureCredentials.getServicePrincipal(getAzureCredentialsId());
         AzureCredentialCache credentialCache = new AzureCredentialCache(servicePrincipal);
-        ShellExecuter azExecuter = new ShellExecuter(listener.getLogger());
+        ShellExecuter azExecuter = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
         try {
             azExecuter.login(credentialCache);
 
@@ -210,7 +210,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         }
 
         try {
-            String scriptToDeploy = "az iot edge deployment create --config-id " + deploymentId + " --hub-name " + iothubName + " --content " + deploymentJsonPath + " --target-condition " + condition + " --priority " + priority + "";
+            String scriptToDeploy = "az iot edge deployment create --config-id " + deploymentId + " --hub-name " + iothubName + " --content " + deploymentJsonPath + " --target-condition \"" + condition + "\" --priority " + priority + "";
             executer.executeAZ(scriptToDeploy, true);
         } catch (Exception e) {
             listener.getLogger().println("Failure: " + e.getMessage());

@@ -109,10 +109,7 @@ public class IntegrationTest {
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
-        int index = s.indexOf("Error");
-        if (index != -1) {
-            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
-        }
+
     }
 
     @Test
@@ -172,10 +169,7 @@ public class IntegrationTest {
         assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
         assertThat(s, CoreMatchers.containsString("\"image\": \"" + testEnv.dockerUrl + "/jenkins-test-platform:0.0.1-arm32v7\""));
-        int index = s.indexOf("Error");
-        if (index != -1) {
-            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
-        }
+
     }
 
     @Test
@@ -234,10 +228,7 @@ public class IntegrationTest {
         // Deploy
         assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
-        int index = s.indexOf("Error");
-        if (index != -1) {
-            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
-        }
+
     }
 
     @Test
@@ -547,10 +538,7 @@ public class IntegrationTest {
         assertThat(s, CoreMatchers.containsString("\"id\": \"" + testName + "\","));
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
         assertThat(s, CoreMatchers.containsString("\"customValue\": \"" + envValue + "\""));
-        int index = s.indexOf("Error");
-        if (index != -1) {
-            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
-        }
+
     }
 
     @Test(timeout = 300000)
@@ -626,10 +614,7 @@ public class IntegrationTest {
         // Credential expand
         assertThat(s, CoreMatchers.containsString("\"address\": \"" + testEnv.dockerUrl + "\","));
         assertThat(s, CoreMatchers.containsString("\"address\": \"" + testEnv.acrName + ".azurecr.io\","));
-        int index = s.indexOf("Error");
-        if (index != -1) {
-            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
-        }
+
     }
 
     @Test(timeout = 300000)
@@ -712,11 +697,6 @@ public class IntegrationTest {
         assertThat(s, CoreMatchers.containsString("\"targetCondition\": \"deviceId='" + deviceId + "'\""));
         assertThat(s, CoreMatchers.containsString("\"image\": \"" + testEnv.dockerUrl + "/jenkins-test-subfolder:0.0.1-amd64"));
         assertThat(s, CoreMatchers.containsString("\"image\": \"" + testEnv.acrName + ".azurecr.io/jenkins-test-subfolder:0.0.1-amd64"));
-
-        int index = s.indexOf("Error");
-        if (index != -1) {
-            assertTrue(!s.contains("error") && s.substring(index - 2, index + 5).equals("0 Error"));
-        }
     }
 
     protected static class TestEnvironment {

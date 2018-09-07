@@ -9,31 +9,25 @@ package com.microsoft.jenkins.iotedge;
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
+import hudson.Launcher.ProcStarter;
+import hudson.Launcher;
+import hudson.Proc;
+import hudson.model.TaskListener;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
-import java.io.File;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Map;
 
 public class ShellExecuter {
 
-    public PrintStream logger;
+    public TaskListener listener;
     public File workspace;
+    public Launcher launcher;
 
-    public ShellExecuter(PrintStream logger, File workspace) {
-        this.logger = logger;
+    public ShellExecuter(Launcher launcher, TaskListener listener, File workspace) {
+        this.listener = listener;
         this.workspace = workspace;
-    }
-
-    public ShellExecuter(PrintStream logger) {
-        this.logger = logger;
-    }
-
-    public ShellExecuter() {
-
+        this.launcher = launcher;
     }
 
     public void login(AzureCredentialCache credentialsCache) throws AzureCredentialsValidationException {
@@ -58,11 +52,10 @@ public class ShellExecuter {
 
     public String executeAZ(String command, Boolean printCommand) throws AzureCloudException {
         if (printCommand) {
-            if (logger != null) logger.println("Running: " + command);
+            if (listener != null) listener.getLogger().println("Running: " + command);
         }
         ExitResult result = executeCommand(command);
         if (result.code == 0) {
-            if (logger != null) logger.println(result.output);
             return result.output;
         }
         throw AzureCloudException.create(result.output);
@@ -79,60 +72,27 @@ public class ShellExecuter {
     }
 
     private ExitResult executeCommand(String command) {
-
-        StringBuffer output = new StringBuffer();
-        Map<String, String> envs = System.getenv();
-        String[] stringEnvs = new String[envs.size()];
-        int index = 0;
-        for (Map.Entry<String, String> mapEntry : envs.entrySet()) {
-            stringEnvs[index++] = mapEntry.getKey() + "=" + mapEntry.getValue();
-        }
-
-        Process p;
+        ProcStarter ps = launcher.launch();
         int exitCode = -1;
-        try {
-            if (File.pathSeparatorChar == ':') {
-                p = Runtime.getRuntime().exec(command , stringEnvs, workspace);
-            } else {
-                p = Runtime.getRuntime().exec("cmd.exe /c " + command, stringEnvs, workspace);
-            }
-            // https://stackoverflow.com/a/5483976/5705657
-            // If do not consume the inputstream of the process in advance, then in some situation, process will stuck
-            // on waitFor method.
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream(), "utf-8"));
-
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
-
-            p.waitFor();
-
-            InputStream stream;
-
-            if (p.exitValue() != 0) {
-                stream = p.getErrorStream();
-            } else {
-                stream = p.getInputStream();
-            }
-
-            reader =
-                    new BufferedReader(new InputStreamReader(stream, "utf-8"));
-
-            line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
-
-            exitCode = p.exitValue();
-            reader.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-
+        String output = null;
+        if (File.pathSeparatorChar == ':') {
+            command = "/bin/sh -c " + command;
+        } else {
+            command = "cmd /c " + command;
         }
-        return new ExitResult(output.toString(), exitCode);
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(System.getenv()).pwd(workspace).stdout(baos));
+            String line = "";
+            exitCode = p.join();
+            output = new String(baos.toByteArray(), "utf-8");
+            listener.getLogger().println(output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return new ExitResult(output, exitCode);
     }
 }

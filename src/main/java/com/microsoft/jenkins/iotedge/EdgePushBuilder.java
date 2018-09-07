@@ -145,9 +145,9 @@ public class EdgePushBuilder extends BaseBuilder {
         credentialMap.put(url, dockerCredential);
         mapper.writeValue(credentialFile, credentialMap);
 
-        ShellExecuter executer = new ShellExecuter(listener.getLogger(), new File(workspace.getRemote(), getRootPath()));
+        ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
         try {
-            executer.executeAZ("iotedgedev push", true);
+            executer.executeAZ("iotedgedev.exe push", true);
         } catch (AzureCloudException e) {
             e.printStackTrace();
             throw new AbortException(e.getMessage());
