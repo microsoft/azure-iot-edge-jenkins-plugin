@@ -42,6 +42,7 @@ import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -153,6 +154,9 @@ public class EdgePushBuilder extends BaseBuilder {
             envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME, username);
             envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD, password);
             executer.executeAZ("iotedgedev.exe push", true, envs);
+
+            // delete generated deployment.json
+            Files.deleteIfExists(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_CONFIG_FOLDERNAME, Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME));
         } catch (AzureCloudException e) {
             e.printStackTrace();
             throw new AbortException(e.getMessage());
