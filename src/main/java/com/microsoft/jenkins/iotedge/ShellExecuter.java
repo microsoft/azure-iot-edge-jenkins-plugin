@@ -16,6 +16,7 @@ import hudson.model.TaskListener;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ShellExecuter {
@@ -43,22 +44,26 @@ public class ShellExecuter {
 
     public String getVersion() throws AzureCloudException {
         String command = "az --version";
-        ExitResult result = executeCommand(command);
+        ExitResult result = executeCommand(command, new HashMap<String, String>());
         if (result.code == 0) {
             return result.output;
         }
         throw AzureCloudException.create("Azure CLI not found");
     }
 
-    public String executeAZ(String command, Boolean printCommand) throws AzureCloudException {
+    public String executeAZ(String command, Boolean printCommand, Map<String, String> overrideEnvs) throws AzureCloudException {
         if (printCommand) {
             if (listener != null) listener.getLogger().println("Running: " + command);
         }
-        ExitResult result = executeCommand(command);
+        ExitResult result = executeCommand(command, overrideEnvs);
         if (result.code == 0) {
             return result.output;
         }
         throw AzureCloudException.create(result.output);
+    }
+
+    public String executeAZ(String command, Boolean printCommand) throws AzureCloudException {
+        return executeAZ(command, printCommand, new HashMap<String, String>());
     }
 
     private static class ExitResult {
@@ -71,7 +76,7 @@ public class ShellExecuter {
         }
     }
 
-    private ExitResult executeCommand(String command) {
+    private ExitResult executeCommand(String command, Map<String,String> envs) {
         ProcStarter ps = launcher.launch();
         int exitCode = -1;
         String output = null;
@@ -82,7 +87,10 @@ public class ShellExecuter {
         }
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(System.getenv()).pwd(workspace).stdout(baos));
+            Map<String, String> envVars = new HashMap<>();
+            envVars.putAll(System.getenv());
+            envVars.putAll(envs);
+            Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(envVars).pwd(workspace).stdout(baos));
             String line = "";
             exitCode = p.join();
             output = new String(baos.toByteArray(), "utf-8");
