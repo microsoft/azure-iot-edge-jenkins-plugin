@@ -46,8 +46,6 @@ public class AzureIoTEdgePlugin extends Plugin {
         properties.put(Constants.TELEMETRY_KEY_TEAM_PROJECT, new String(Base64.encodeBase64(sha256(workspace)), StandardCharsets.UTF_8));
         properties.put(Constants.TELEMETRY_KEY_OS_TYPE, System.getProperty("os.name"));
         properties.put(Constants.TELEMETRY_KEY_BUILD_ID, buildNumber);
-//        properties.put(Constants.TELEMETRY_KEY_NUM_PUSH, String.valueOf(numOfPush));
-//        properties.put(Constants.TELEMETRY_KEY_NUM_DEPLOY, String.valueOf(numOfDeploy));
         properties.put(Constants.TELEMETRY_KEY_SUCCESS, String.valueOf(success));
         properties.put(Constants.TELEMETRY_KEY_TASK_TIME, String.valueOf(time));
 
