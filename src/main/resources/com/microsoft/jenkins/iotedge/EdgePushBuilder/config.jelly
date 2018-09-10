@@ -14,13 +14,13 @@
                               checked="${ instance.getDockerRegistryType()==null || instance.getDockerRegistryType() == 'acr'}"
                               >
             <f:entry title="${%Azure_Credentials}" field="azureCredentialsId">
-                <c:select expressionAllowed="false"/>
+                <c:select expressionAllowed="false" checkMethod="post"/>
             </f:entry>
             <f:entry title="${%Resource_Group_Name}" field="resourceGroup">
-                <f:select/>
+                <f:select checkMethod="post"/>
             </f:entry>
             <f:entry title="${%ACR_Name}" field="acrName">
-                <f:select/>
+                <f:select checkMethod="post"/>
             </f:entry>
         </f:radioBlock>
 

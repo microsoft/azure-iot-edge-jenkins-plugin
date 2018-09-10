@@ -41,6 +41,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
+import javax.ws.rs.POST;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -166,11 +167,6 @@ public class EdgePushBuilder extends BaseBuilder {
     @Extension
     @Symbol("azureIoTEdgePush")
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
-        public FormValidation doCheckName(@QueryParameter String value, @QueryParameter boolean useFrench)
-                throws IOException, ServletException {
-
-            return FormValidation.ok();
-        }
 
         public DockerRegistryEndpoint.DescriptorImpl getDockerRegistryEndpointDescriptor() {
             final Jenkins jenkins = Jenkins.getInstance();
@@ -182,19 +178,25 @@ public class EdgePushBuilder extends BaseBuilder {
             }
         }
 
+        @POST
         public ListBoxModel doFillAzureCredentialsIdItems(@AncestorInPath final Item owner) {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             return listAzureCredentialsIdItems(owner);
         }
 
+        @POST
         public ListBoxModel doFillResourceGroupItems(@AncestorInPath Item owner,
                                                      @QueryParameter String azureCredentialsId) {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             return listResourceGroupItems(owner, azureCredentialsId);
         }
 
+        @POST
         public ListBoxModel doFillAcrNameItems(@AncestorInPath Item owner,
                                                @QueryParameter String azureCredentialsId,
                                                @QueryParameter String resourceGroup) {
             if (StringUtils.isNotBlank(azureCredentialsId) && StringUtils.isNotBlank(resourceGroup)) {
+                Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
                 return listAcrNameItems(owner, azureCredentialsId, resourceGroup);
             } else {
                 return new ListBoxModel(new ListBoxModel.Option(Constants.EMPTY_SELECTION, ""));

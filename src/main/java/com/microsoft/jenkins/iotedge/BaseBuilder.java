@@ -24,12 +24,14 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
+import javax.ws.rs.POST;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -167,8 +169,10 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
             return model;
         }
 
+        @POST
         public FormValidation doCheckDeploymentId(@QueryParameter String value)
                 throws IOException, ServletException {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             if (Util.isValidDeploymentId(value)) {
                 return FormValidation.ok();
             } else {

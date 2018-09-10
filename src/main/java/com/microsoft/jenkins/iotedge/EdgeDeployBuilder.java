@@ -42,6 +42,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
+import javax.ws.rs.POST;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -253,8 +254,10 @@ public class EdgeDeployBuilder extends BaseBuilder {
     public static final class DescriptorImpl extends BaseBuilder.DescriptorImpl {
         public static final String defaultPriority = "10";
 
+        @POST
         public FormValidation doCheckTargetCondition(@QueryParameter String value)
                 throws IOException, ServletException {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             if (Util.isValidTargetCondition(value)) {
                 return FormValidation.ok();
             } else {
@@ -262,8 +265,10 @@ public class EdgeDeployBuilder extends BaseBuilder {
             }
         }
 
+        @POST
         public FormValidation doCheckPriority(@QueryParameter String value)
                 throws IOException, ServletException {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             if (Util.isValidPriority(value)) {
                 return FormValidation.ok();
             } else {
@@ -281,18 +286,24 @@ public class EdgeDeployBuilder extends BaseBuilder {
             }
         }
 
+        @POST
         public ListBoxModel doFillAzureCredentialsIdItems(@AncestorInPath final Item owner) {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             return listAzureCredentialsIdItems(owner);
         }
 
+        @POST
         public ListBoxModel doFillResourceGroupItems(@AncestorInPath Item owner,
                                                      @QueryParameter String azureCredentialsId) {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             return listResourceGroupItems(owner, azureCredentialsId);
         }
 
+        @POST
         public ListBoxModel doFillIothubNameItems(@AncestorInPath Item owner,
                                                   @QueryParameter String azureCredentialsId,
                                                   @QueryParameter String resourceGroup) {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             if (StringUtils.isNotBlank(azureCredentialsId) && StringUtils.isNotBlank(resourceGroup)) {
                 return listIothubNameItems(owner, azureCredentialsId, resourceGroup);
             } else {
