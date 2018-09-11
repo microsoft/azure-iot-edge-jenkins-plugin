@@ -169,15 +169,5 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
             return model;
         }
 
-        @POST
-        public FormValidation doCheckDeploymentId(@QueryParameter String value)
-                throws IOException, ServletException {
-            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
-            if (Util.isValidDeploymentId(value)) {
-                return FormValidation.ok();
-            } else {
-                return FormValidation.error("Deployment ID is not in right format. Click help button to learn more.");
-            }
-        }
     }
 }
