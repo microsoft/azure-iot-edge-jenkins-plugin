@@ -110,56 +110,58 @@ public class EdgePushBuilder extends BaseBuilder {
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-        boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
-        String credentialId = null;
-        listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
-        String url = "", username = "", password = "";
-
-        if (isAcr) {
-            credentialId = getAzureCredentialsId();
-            final Azure azureClient = AzureUtils.buildClient(run.getParent(), credentialId);
-            Registries rs = azureClient.containerRegistries();
-            Registry r = rs.getByResourceGroup(getResourceGroup(), acrName);
-            RegistryCredentials rc = r.getCredentials();
-            username = rc.username();
-            url = r.loginServerUrl();
-            password = rc.accessKeys().get(AccessKeyType.PRIMARY);
-        } else {
-            url = dockerRegistryEndpoint.getUrl();
-            credentialId = dockerRegistryEndpoint.getCredentialsId();
-            StandardUsernamePasswordCredentials credential = CredentialsProvider.findCredentialById(credentialId, StandardUsernamePasswordCredentials.class, run);
-            if (credential != null) {
-                username = credential.getUsername();
-                password = credential.getPassword().getPlainText();
-            }
-        }
-
-        // Generate .env file for iotedgedev use
-        writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), url, bypassModules);
-
-        // Save docker credential id to a file
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, DockerCredential> credentialMap = new HashMap<>();
-        File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
-        if (credentialFile.exists() && !credentialFile.isDirectory()) {
-            credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>() {
-            });
-        }
-        DockerCredential dockerCredential = new DockerCredential(credentialId, isAcr, isAcr ? acrName : url);
-        credentialMap.put(url, dockerCredential);
-        mapper.writeValue(credentialFile, credentialMap);
-
-        ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
         try {
+            boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
+            String credentialId = null;
+            listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
+            String url = "", username = "", password = "";
+
+            if (isAcr) {
+                credentialId = getAzureCredentialsId();
+                final Azure azureClient = AzureUtils.buildClient(run.getParent(), credentialId);
+                Registries rs = azureClient.containerRegistries();
+                Registry r = rs.getByResourceGroup(getResourceGroup(), acrName);
+                RegistryCredentials rc = r.getCredentials();
+                username = rc.username();
+                url = r.loginServerUrl();
+                password = rc.accessKeys().get(AccessKeyType.PRIMARY);
+            } else {
+                url = dockerRegistryEndpoint.getUrl();
+                credentialId = dockerRegistryEndpoint.getCredentialsId();
+                StandardUsernamePasswordCredentials credential = CredentialsProvider.findCredentialById(credentialId, StandardUsernamePasswordCredentials.class, run);
+                if (credential != null) {
+                    username = credential.getUsername();
+                    password = credential.getPassword().getPlainText();
+                }
+            }
+
+            // Generate .env file for iotedgedev use
+            writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), url, bypassModules);
+
+            // Save docker credential id to a file
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, DockerCredential> credentialMap = new HashMap<>();
+            File credentialFile = new File(Paths.get(workspace.getRemote(), getRootPath(), Constants.DOCKER_CREDENTIAL_FILENAME).toString());
+            if (credentialFile.exists() && !credentialFile.isDirectory()) {
+                credentialMap = mapper.readValue(credentialFile, new TypeReference<Map<String, DockerCredential>>() {
+                });
+            }
+            DockerCredential dockerCredential = new DockerCredential(credentialId, isAcr, isAcr ? acrName : url);
+            credentialMap.put(url, dockerCredential);
+            mapper.writeValue(credentialFile, credentialMap);
+
+            ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
+
             Map<String, String> envs = new HashMap<>();
             envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME, username);
             envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD, password);
-            executer.executeAZ("iotedgedev.exe push", true, envs);
+            executer.executeAZ("iotedgedev push", true, envs);
 
             // delete generated deployment.json
             Files.deleteIfExists(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_CONFIG_FOLDERNAME, Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME));
+            AzureIoTEdgePlugin.sendEvent(run.getClass().getSimpleName(), Constants.TELEMETRY_VALUE_TASK_TYPE_PUSH, null, run.getFullDisplayName(), null, null);
         } catch (AzureCloudException e) {
-            e.printStackTrace();
+            AzureIoTEdgePlugin.sendEvent(run.getClass().getSimpleName(), Constants.TELEMETRY_VALUE_TASK_TYPE_PUSH, e.getMessage(), run.getFullDisplayName(), null, null);
             throw new AbortException(e.getMessage());
         }
     }

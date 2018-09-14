@@ -53,16 +53,15 @@ public final class Constants {
     /**
      * AI constants.
      */
-    public static final String TELEMETRY_KEY_TEAM_PROJECT = "hashTeamProjectId";
-    public static final String TELEMETRY_KEY_OS_TYPE = "osType";
-    public static final String TELEMETRY_KEY_BUILD_ID = "buildId";
+    public static final String TELEMETRY_KEY_JOB_NAME = "hashJobName";
+    public static final String TELEMETRY_KEY_BUILD_NUMBER = "buildNumber";
+    public static final String TELEMETRY_KEY_JOB_TYPE = "jobType";
     public static final String TELEMETRY_KEY_TASK_TYPE = "taskType";
-    public static final String TELEMETRY_KEY_NUM_PUSH = "numOfPushSteps";
-    public static final String TELEMETRY_KEY_NUM_DEPLOY = "numOfDeploySteps";
     public static final String TELEMETRY_KEY_SUCCESS = "isSuccess";
-    public static final String TELEMETRY_KEY_TASK_TIME = "taskTime";
-    public static final String TELEMETRY_KEY_COMMON_EXTVERSION = "common.extversion";
     public static final String TELEMETRY_KEY_COMMON_EXTNAME = "common.extname";
+    public static final String TELEMETRY_KEY_SUBSCRIPTION_ID = "hashSubscriptionId";
+    public static final String TELEMETRY_KEY_IOTHUB_NAME = "hashIotHubName";
+    public static final String TELEMETRY_KEY_ERROR_MESSAGE = "errorMessage";
 
 
     public static final String TELEMETRY_VALUE_TASK_TYPE_PUSH = "Build and Push";

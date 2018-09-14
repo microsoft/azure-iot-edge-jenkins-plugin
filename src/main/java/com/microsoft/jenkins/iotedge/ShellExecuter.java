@@ -81,7 +81,7 @@ public class ShellExecuter {
         int exitCode = -1;
         String output = null;
         if (File.pathSeparatorChar == ':') {
-            command = "/bin/sh -c " + command;
+            command = "" + command;
         } else {
             command = "cmd /c " + command;
         }
