@@ -53,7 +53,7 @@ public class AzureIoTEdgePlugin extends Plugin {
         properties.put(Constants.TELEMETRY_KEY_TASK_TYPE, taskType);
         properties.put(Constants.TELEMETRY_KEY_COMMON_EXTNAME, mavenProperties.getProperty("artifactId"));
 
-        AppInsightsClientFactory.getInstance(AzureIoTEdgePlugin.class).withInstrumentationKey("7917d92b-e3d7-49e0-b18d-88ffe1641234")
+        AppInsightsClientFactory.getInstance(AzureIoTEdgePlugin.class).withInstrumentationKey("fed7fc65-5b4a-4e66-9d46-c5f016d4e2b4")
                 .sendEvent("", properties.get(Constants.TELEMETRY_KEY_TASK_TYPE), properties, false);
     }
 
