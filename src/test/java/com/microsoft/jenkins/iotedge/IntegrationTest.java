@@ -810,7 +810,11 @@ public class IntegrationTest {
 
         HashMap<String,String> testEnvKeyMap = new HashMap<>();
         testEnvKeyMap.put(Constants.JENKINS_TEST_ENVIRONMENT_ENV_KEY, "true");
+        // Disable telemetry for integration test
+        testEnvKeyMap.put("APPLICATION_INSIGHTS_IKEY", "");
         setEnv(testEnvKeyMap);
+
+
     }
 
 
