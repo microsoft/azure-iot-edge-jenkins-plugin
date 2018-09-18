@@ -13,6 +13,14 @@ This is the work flow for Azure IoT Edge solution CI/CD pipeline.
 
 ## How to Install
 
+### Prerequisites
+Install following tools on Jenkins host. (If your Jenkins host is Windows, then the docker container needs to be Linux container)
+  * [Docker](https://docs.docker.com/install/)
+  * [Azure CLI](https://docs.microsoft.com/en-US/cli/azure/install-azure-cli)
+  * [Azure CLI IoT Extension](https://github.com/Azure/azure-iot-cli-extension#quick-guide)
+  * iotedgedev `pip install iotedgedev`
+
+### Install extension
 You can install/update this plugin in Jenkins update center (Manage Jenkins -> Manage Plugins, search Azure IoT Edge Plugin).
 
 You can also manually install the plugin if you want to try the latest feature before it's officially released.
@@ -27,20 +35,24 @@ To manually install the plugin:
 4. Select `azure-iot-edge.hpi` in `target` folder of your repo, click Upload.
 5. Restart your Jenkins instance after install is completed.
 
-## Prerequisites
+## Before using extension
 
 To use this plugin to build and deploy Azure IoT Edge solution, first you need to have an Azure Service Principal in your Jenkins instance.
 
 1. Create an Azure Service Principal through [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?toc=%2fazure%2fazure-resource-manager%2ftoc.json) or [Azure portal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal).
-2. Open Jenkins dashboard, go to Credentials, add a new Microsoft Azure Service Principal with the credential information you just created.
-3. Install following tools on Jenkins host. (If your Jenkins host is Windows, then the docker container needs to be Linux container)
-    * [Docker](https://docs.docker.com/install/)
-    * [Azure CLI](https://docs.microsoft.com/en-US/cli/azure/install-azure-cli)
-    * [Azure CLI IoT Extension](https://github.com/Azure/azure-iot-cli-extension#quick-guide)
-    * iotedgedev `pip install iotedgedev`
+2. Open Jenkins dashboard, go to Credentials, add a new `Microsoft Azure Service Principal` with the credential information you just created.
+3. If you use common docker registry credential(like docker hub), you may also add a new `Username with password` credential.
 
-## Create a Freestyle project
-### Build and Push task
+## Create a project
+
+In Jenkins, there are two types of project.
+* Freestyle project: Config through UI
+* Pipeline project: Config through code
+
+### Create a Freestyle project
+#### Build and Push task
+
+![Build](doc/build.png)
 
 1. In `Build` section, click `Add build step`, then choose `Azure IoT Edge Build and Push`. 
 2. Set `Solution Root Path`, in most cases it's where deployment.template.json located.
@@ -49,36 +61,41 @@ To use this plugin to build and deploy Azure IoT Edge solution, first you need t
   * For Azure Container Registry, you need to use the Azure Service Principal created above to authenticate.
   * For other types of registry(docker hub), you need to specify `Docker registry URL` and then a credential with type `Username with password`.
 
-### Deploy task
+#### Deploy task
+
+![Deploy](doc/deploy.png)
 
 1. In `Build` section, click `Add build step`, then choose `Azure IoT Edge Deploy`. 
 2. Set `Solution Root Path`, in most cases it's where deployment.template.json located.
 3. Choose Azure IoT Hub.
 4. Set deployment configurations. You can click `help` button after the input box to get detailed explanation of the item.
 
-## Create a Pipeline project
+### Create a Pipeline project
 
-You can also use this plugin in pipeline (Jenkinsfile). Here are some samples to use the plugin in pipeline script:
+You can also use this plugin in pipeline (Jenkinsfile). Here are some samples to use the plugin in pipeline script, there is also an [example](https://github.com/VSChina/iot-edge-sample-solution/tree/master-pipeline) for pipeline project.
 
-### Build and Push task
+#### Project config on Jenkins
+![pipeline](doc/pipeline.png)
 
-#### Use Azure Container Registry
+#### Customize pipeline: Build and Push task
+
+##### Use Azure Container Registry
 ```groovy
 azureIoTEdgePush dockerRegistryType: 'acr', acrName: '<acr_name>', bypassModules: '', azureCredentialsId: '<azure_credential_id>', resourceGroup: '<resource_group_name>', rootPath: '<solution_root_path>'
 ```
 
-#### Use common Container Registry
+##### Use common Container Registry
 ```groovy
 azureIoTEdgePush dockerRegistryType: 'common', dockerRegistryEndpoint: [credentialsId: '<credential_id>', url: '<url>'], bypassModules: '', resourceGroup: '<resource_group_name>', rootPath: '<solution_root_path>'
 ```
 
-### Deploy task 
-#### For single device
+#### Customize pipeline: Deploy task 
+##### For single device
 ```groovy
 azureIoTEdgeDeploy azureCredentialsId: '<azure_credential_id>', deploymentId: '<deployment_id>', deploymentType: 'single', deviceId: '<device_id>', iothubName: '<iothub_name>', priority: '<priority>', resourceGroup: '<resource_group_name>', rootPath: '<solution_root_path>', targetCondition: ''
 ```
 
-#### For multiple devices using target condition
+##### For multiple devices using target condition
 ```groovy
 azureIoTEdgeDeploy azureCredentialsId: '<azure_credential_id>', deploymentId: '<deployment_id>', deploymentType: 'multiple', targetCondition: '<target_condition>', iothubName: '<iothub_name>', priority: '<priority>', resourceGroup: '<resource_group_name>', rootPath: '<solution_root_path>', targetCondition: ''
 ```
