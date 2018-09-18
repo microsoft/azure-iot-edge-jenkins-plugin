@@ -136,7 +136,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
         String iotHubUrl = iothubName;
         try {
             // Get deployment.json using iotedgedev
-            ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
+            ShellExecuter executer = new ShellExecuter(run, launcher, listener, new File(workspace.getRemote(), getRootPath()));
             writeEnvFile(Paths.get(workspace.getRemote(), getRootPath(), Constants.IOTEDGEDEV_ENV_FILENAME).toString(), "", "");
             executer.executeAZ("iotedgedev genconfig", true);
 
@@ -221,7 +221,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
             }
             AzureCredentials.ServicePrincipal servicePrincipal = AzureCredentials.getServicePrincipal(getAzureCredentialsId());
             AzureCredentialCache credentialCache = new AzureCredentialCache(servicePrincipal);
-            ShellExecuter azExecuter = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
+            ShellExecuter azExecuter = new ShellExecuter(run, launcher, listener, new File(workspace.getRemote(), getRootPath()));
             try {
                 azExecuter.login(credentialCache);
 

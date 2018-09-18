@@ -150,8 +150,7 @@ public class EdgePushBuilder extends BaseBuilder {
             credentialMap.put(url, dockerCredential);
             mapper.writeValue(credentialFile, credentialMap);
 
-            ShellExecuter executer = new ShellExecuter(launcher, listener, new File(workspace.getRemote(), getRootPath()));
-
+            ShellExecuter executer = new ShellExecuter(run, launcher, listener, new File(workspace.getRemote(), getRootPath()));
             Map<String, String> envs = new HashMap<>();
             envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_USERNAME, username);
             envs.put(Constants.IOTEDGEDEV_ENV_REGISTRY_PASSWORD, password);

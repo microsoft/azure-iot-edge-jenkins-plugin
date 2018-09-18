@@ -12,6 +12,7 @@ import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
 import hudson.Launcher.ProcStarter;
 import hudson.Launcher;
 import hudson.Proc;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
@@ -24,8 +25,10 @@ public class ShellExecuter {
     public TaskListener listener;
     public File workspace;
     public Launcher launcher;
+    public Run run;
 
-    public ShellExecuter(Launcher launcher, TaskListener listener, File workspace) {
+    public ShellExecuter(Run run, Launcher launcher, TaskListener listener, File workspace) {
+        this.run = run;
         this.listener = listener;
         this.workspace = workspace;
         this.launcher = launcher;
@@ -89,6 +92,7 @@ public class ShellExecuter {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Map<String, String> envVars = new HashMap<>();
             envVars.putAll(System.getenv());
+            envVars.putAll(run.getEnvVars());
             envVars.putAll(envs);
             Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(envVars).pwd(workspace).stdout(baos));
             String line = "";
