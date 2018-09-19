@@ -32,7 +32,4 @@
             </f:entry>
         </f:radioBlock>
     </f:section>
-
-    <f:advanced>
-    </f:advanced>
 </j:jelly>
