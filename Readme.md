@@ -104,6 +104,10 @@ azureIoTEdgeDeploy azureCredentialsId: '<azure_credential_id>', deploymentId: '<
 
 For advanced options, you can use Jenkins Pipeline Syntax tool to generate a sample script.
 
+## FAQ
+### Does ARM platform supported?
+If you would like to build ARM platform image, you'll need to setup an ARM build agent. And for the [Prerequisites](#Prerequisites), they also need to be setup on build agent.
+
 ## Data/Telemetry
 Azure IoT Edge Plugin for Jenkins collects usage data and sends it to Microsoft to help improve our products and services. Read our [privacy statement](http://go.microsoft.com/fwlink/?LinkId=521839) to learn more.  
 You can turn off usage data collection in Manage Jenkins -> Configure System -> Azure -> Help make Azure Jenkins plugins better by sending anonymous usage statistics to Azure Application Insights.
