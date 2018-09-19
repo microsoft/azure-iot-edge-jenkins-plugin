@@ -135,8 +135,8 @@
 
     <developers>
       <developer>
-        <id>azure_iotedge_tooling</id>
-        <name>Azure IoT Edge Tooling Team</name>
+        <id>azure_iot_tooling</id>
+        <name>Azure IoT Tooling Team</name>
         <email>vsciet@microsoft.com</email>
       </developer>
     </developers>
