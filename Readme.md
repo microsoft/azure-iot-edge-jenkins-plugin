@@ -1,6 +1,8 @@
 # Azure IoT Edge Plugin
 
-A Jenkins plugin for continuous integration(build and push docker image) and continuous deployment(create Edge deployment on Azure)
+Azure IoT Edge Plugin makes it easy to setup a CI/CD pipeline for developing an [IoT Edge](https://docs.microsoft.com/azure/iot-edge/how-iot-edge-works) solution on Jenkins, by providing following functionalities:
+* Continuous integration(build and push docker image)
+* Continuous deployment(create Edge deployment on Azure)
 
 ## Feedback
 * If you encounter any bugs with this plugin please file an issue in [Jenkins JIRA](https://issues.jenkins-ci.org) under component `azure-iot-edge-plugin`.
