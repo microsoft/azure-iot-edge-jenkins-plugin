@@ -134,7 +134,6 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
     @Override
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
-        String iotHubUrl = iothubName;
         try {
             // Get deployment.json using iotedgedev
             ShellExecuter executer = new ShellExecuter(run, launcher, listener, new File(workspace.getRemote(), getRootPath()));
@@ -226,13 +225,6 @@ public class EdgeDeployBuilder extends BaseBuilder {
             try {
                 azExecuter.login(credentialCache);
 
-                String result = azExecuter.executeAZ("az iot hub show-connection-string -n " + iothubName, false);
-                Pattern r = Pattern.compile("HostName=([^;]*);");
-                Matcher m = r.matcher(result);
-                if(m.find()) {
-                    iotHubUrl = m.group(1);
-                }
-
                 String scriptToDelete = "az iot edge deployment delete --hub-name " + iothubName + " --config-id " + deploymentId + "";
                 azExecuter.executeAZ(scriptToDelete, true);
             } catch (AzureCloudException e) {
@@ -246,9 +238,9 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
             // delete generated deployment.json
             Files.deleteIfExists(Paths.get(workspace.getRemote(), getRootPath(), Constants.EDGE_DEPLOYMENT_CONFIG_FOLDERNAME, Constants.EDGE_DEPLOYMENT_CONFIG_FILENAME));
-            AzureIoTEdgePlugin.sendEvent(run.getClass().getSimpleName(), Constants.TELEMETRY_VALUE_TASK_TYPE_DEPLOY, null, run.getFullDisplayName(), servicePrincipal.getSubscriptionId() , iotHubUrl);
+            AzureIoTEdgePlugin.sendEvent(run.getClass().getSimpleName(), Constants.TELEMETRY_VALUE_TASK_TYPE_DEPLOY, null, run.getFullDisplayName(), servicePrincipal.getSubscriptionId() , String.format(Constants.IOT_HUB_URL, iothubName));
         } catch (AzureCloudException | AzureCredentialsValidationException e) {
-            AzureIoTEdgePlugin.sendEvent(run.getClass().getSimpleName(), Constants.TELEMETRY_VALUE_TASK_TYPE_DEPLOY, e.getMessage(), run.getFullDisplayName(), AzureCredentials.getServicePrincipal(getAzureCredentialsId()).getSubscriptionId(), iotHubUrl);
+            AzureIoTEdgePlugin.sendEvent(run.getClass().getSimpleName(), Constants.TELEMETRY_VALUE_TASK_TYPE_DEPLOY, e.getMessage(), run.getFullDisplayName(), AzureCredentials.getServicePrincipal(getAzureCredentialsId()).getSubscriptionId(), String.format(Constants.IOT_HUB_URL, iothubName));
             throw new AbortException(e.getMessage());
         }
     }
