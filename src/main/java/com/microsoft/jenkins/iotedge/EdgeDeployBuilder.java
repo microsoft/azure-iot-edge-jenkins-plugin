@@ -226,7 +226,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
                 azExecuter.login(credentialCache);
 
                 String scriptToDelete = "az iot edge deployment delete --hub-name " + iothubName + " --config-id " + deploymentId + "";
-                azExecuter.executeAZ(scriptToDelete, true);
+                azExecuter.executeAZ(scriptToDelete, false);
             } catch (AzureCloudException e) {
                 if (!e.getMessage().contains("ConfigurationNotFound")) {
                     throw e;

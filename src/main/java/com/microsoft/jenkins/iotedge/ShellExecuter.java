@@ -47,7 +47,7 @@ public class ShellExecuter {
 
     public String getVersion() throws AzureCloudException {
         String command = "az --version";
-        ExitResult result = executeCommand(command, new HashMap<String, String>());
+        ExitResult result = executeCommand(command, new HashMap<String, String>(), false);
         if (result.code == 0) {
             return result.output;
         }
@@ -58,7 +58,7 @@ public class ShellExecuter {
         if (printCommand) {
             if (listener != null) listener.getLogger().println("Running: " + command);
         }
-        ExitResult result = executeCommand(command, overrideEnvs);
+        ExitResult result = executeCommand(command, overrideEnvs, printCommand);
         if (result.code == 0) {
             return result.output;
         }
@@ -79,7 +79,7 @@ public class ShellExecuter {
         }
     }
 
-    private ExitResult executeCommand(String command, Map<String,String> envs) {
+    private ExitResult executeCommand(String command, Map<String,String> envs, boolean printCommand) {
         ProcStarter ps = launcher.launch();
         int exitCode = -1;
         String output = null;
@@ -98,7 +98,7 @@ public class ShellExecuter {
             String line = "";
             exitCode = p.join();
             output = new String(baos.toByteArray(), "utf-8");
-            if (listener != null) listener.getLogger().println(output);
+            if (listener != null && printCommand) listener.getLogger().println(output);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
