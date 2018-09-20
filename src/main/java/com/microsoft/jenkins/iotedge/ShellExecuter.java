@@ -92,13 +92,13 @@ public class ShellExecuter {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Map<String, String> envVars = new HashMap<>();
             envVars.putAll(System.getenv());
-            envVars.putAll(run.getEnvVars());
+            if(run != null) envVars.putAll(run.getEnvVars());
             envVars.putAll(envs);
             Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(envVars).pwd(workspace).stdout(baos));
             String line = "";
             exitCode = p.join();
             output = new String(baos.toByteArray(), "utf-8");
-            listener.getLogger().println(output);
+            if (listener != null) listener.getLogger().println(output);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

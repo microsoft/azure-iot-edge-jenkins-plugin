@@ -42,6 +42,7 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+import retrofit2.http.Query;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.POST;
@@ -320,6 +321,19 @@ public class EdgeDeployBuilder extends BaseBuilder {
             Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
             if (StringUtils.isNotBlank(azureCredentialsId) && StringUtils.isNotBlank(resourceGroup)) {
                 return listIothubNameItems(owner, azureCredentialsId, resourceGroup);
+            } else {
+                return new ListBoxModel(new ListBoxModel.Option(Constants.EMPTY_SELECTION, ""));
+            }
+        }
+
+        @POST
+        public ListBoxModel doFillDeviceIdItems(@AncestorInPath Item owner,
+                                                @QueryParameter String azureCredentialsId,
+                                                @QueryParameter String resourceGroup,
+                                                @QueryParameter String iothubName) {
+            Jenkins.getInstance().checkPermission(Jenkins.ADMINISTER);
+            if (StringUtils.isNotBlank(azureCredentialsId) && StringUtils.isNotBlank(resourceGroup)&& StringUtils.isNotBlank(iothubName)) {
+                return listDeviceIdItems(owner, azureCredentialsId, resourceGroup, iothubName);
             } else {
                 return new ListBoxModel(new ListBoxModel.Option(Constants.EMPTY_SELECTION, ""));
             }

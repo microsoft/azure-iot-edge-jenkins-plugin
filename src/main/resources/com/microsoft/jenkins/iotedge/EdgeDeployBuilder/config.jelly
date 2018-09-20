@@ -36,9 +36,9 @@
                 <f:radioBlock name="deploymentType" value="single" inline="true" title="${%Deployment_Single}"
                                               checked="${ instance.getDeploymentType()==null || instance.getDeploymentType() == 'single'}"
                                               help="/${descriptor.descriptorUrl}/help/deploySingle">
-                    <f:entry title="${%Device_ID}" field="deviceId">
-                                                        <f:textbox/>
-                                            </f:entry>
+                                              <f:entry title="${%Device_ID}" field="deviceId">
+                                                              <f:select checkMethod="post"/>
+                                                          </f:entry>
                 </f:radioBlock>
     </f:section>
 </j:jelly>

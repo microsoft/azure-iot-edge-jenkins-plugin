@@ -50,6 +50,14 @@ public final class Constants {
         iotedgedevEnvMap.put("ACTIVE_DOCKER_PLATFORMS", "amd64");
     }
 
+    public static final String IOT_HUB_URL = "%s.azure-devices.net";
+
+    public static final String REST_GET_TOKEN_URL = "https://login.microsoftonline.com/%s/oauth2/token";
+    public static final String REST_GET_TOKEN_BODY = "resource=https%%3A%%2F%%2Fmanagement.core.windows.net%%2F&client_id=%s&grant_type=client_credentials&client_secret=%s";
+    public static final String REST_GET_IOT_KEY_URL = "https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Devices/IotHubs/%s/listkeys?api-version=2018-04-01";
+    public static final String REST_GET_DEVICES_URL = "https://%s.azure-devices.net/devices/query?api-version=2018-06-30";
+    public static final String REST_GET_DEVICES_BODY = "{\"query\": \"SELECT * FROM DEVICES where capabilities.iotEdge=true\"}";
+
     /**
      * AI constants.
      */
@@ -67,4 +75,5 @@ public final class Constants {
     public static final String TELEMETRY_VALUE_TASK_TYPE_PUSH = "Build and Push";
     public static final String TELEMETRY_VALUE_TASK_TYPE_DEPLOY = "Deploy";
 
+    public static final int SAS_TOKEN_MINUTES = 5;
 }

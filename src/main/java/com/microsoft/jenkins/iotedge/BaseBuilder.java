@@ -12,8 +12,10 @@ import com.microsoft.azure.management.containerregistry.Registry;
 import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.ResourceGroup;
 import com.microsoft.azure.util.AzureBaseCredentials;
+import com.microsoft.azure.util.AzureCredentials;
 import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient;
 import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClientFactory;
+import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import com.microsoft.jenkins.iotedge.util.Env;
@@ -27,15 +29,15 @@ import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.POST;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.URLEncoder;
 
 public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     public String getAzureCredentialsId() {
@@ -164,6 +166,51 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
                         model.add(resource.name());
                     }
                 }
+            }
+
+            return model;
+        }
+
+        protected ListBoxModel listDeviceIdItems(Item owner, String azureCredentialsId,
+                                                   String resourceGroup, String iothubName) {
+            final ListBoxModel model = new ListBoxModel(new ListBoxModel.Option(Constants.EMPTY_SELECTION, ""));
+
+            if (StringUtils.isNotBlank(azureCredentialsId)) {
+                AzureCredentials.ServicePrincipal servicePrincipal = AzureCredentials.getServicePrincipal(azureCredentialsId);
+                String output = null;
+
+                output = Util.executePost(String.format(Constants.REST_GET_TOKEN_URL, servicePrincipal.getTenant()),
+                        String.format(Constants.REST_GET_TOKEN_BODY, servicePrincipal.getClientId(), Util.encodeURIComponent(servicePrincipal.getClientSecret())),
+                        null, null);
+
+                String accessToken = new JSONObject(output).getString("access_token");
+
+                output = Util.executePost(String.format(Constants.REST_GET_IOT_KEY_URL, servicePrincipal.getSubscriptionId(), Util.encodeURIComponent(resourceGroup), Util.encodeURIComponent(iothubName)),
+                        "",
+                        "Bearer " + accessToken, "application/json");
+                String key = "";
+                JSONArray keys = new JSONObject(output).getJSONArray("value");
+                for (int i = 0; i < keys.length(); i++) {
+                    JSONObject obj = keys.getJSONObject(i);
+                    if (obj.getString("keyName").equals("iothubowner")) {
+                        key = obj.getString("primaryKey");
+                        break;
+                    }
+                }
+
+                output = Util.executePost(String.format(Constants.REST_GET_DEVICES_URL, Util.encodeURIComponent(iothubName)),
+                        Constants.REST_GET_DEVICES_BODY,
+                        Util.getSharedAccessToken(String.format(Constants.IOT_HUB_URL, Util.encodeURIComponent(iothubName)),
+                                key,
+                                "iothubowner",
+                                Constants.SAS_TOKEN_MINUTES),
+                        "application/json");
+
+                JSONArray deviceArr = new JSONArray(output);
+                for (int i = 0; i < deviceArr.length(); i++) {
+                    model.add(deviceArr.getJSONObject(i).getString("deviceId"));
+                }
+
             }
 
             return model;

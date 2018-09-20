@@ -6,7 +6,6 @@ import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.microsoft.azure.CloudException;
 import com.microsoft.azure.util.AzureCredentials;
-import com.microsoft.jenkins.azurecommons.command.IBaseCommandData;
 import com.microsoft.jenkins.azurecommons.core.AzureClientFactory;
 import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsGlobalConfig;
 import com.microsoft.jenkins.iotedge.util.Constants;
