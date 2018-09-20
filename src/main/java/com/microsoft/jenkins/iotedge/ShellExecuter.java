@@ -55,9 +55,6 @@ public class ShellExecuter {
     }
 
     public String executeAZ(String command, Boolean printCommand, Map<String, String> overrideEnvs) throws AzureCloudException {
-        if (printCommand) {
-            if (listener != null) listener.getLogger().println("Running: " + command);
-        }
         ExitResult result = executeCommand(command, overrideEnvs, printCommand);
         if (result.code == 0) {
             return result.output;
@@ -94,7 +91,7 @@ public class ShellExecuter {
             envVars.putAll(System.getenv());
             if(run != null) envVars.putAll(run.getEnvVars());
             envVars.putAll(envs);
-            Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(envVars).pwd(workspace).stdout(baos));
+            Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(envVars).pwd(workspace).stdout(baos).quiet(!printCommand));
             String line = "";
             exitCode = p.join();
             output = new String(baos.toByteArray(), "utf-8");

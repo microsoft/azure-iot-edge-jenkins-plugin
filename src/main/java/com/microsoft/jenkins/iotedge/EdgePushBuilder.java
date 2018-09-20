@@ -113,7 +113,6 @@ public class EdgePushBuilder extends BaseBuilder {
         try {
             boolean isAcr = dockerRegistryType.equals(Constants.DOCKER_REGISTRY_TYPE_ACR);
             String credentialId = null;
-            listener.getLogger().println(ContainerRegistryManager.class.getPackage().getSpecificationVersion());
             String url = "", username = "", password = "";
 
             if (isAcr) {
