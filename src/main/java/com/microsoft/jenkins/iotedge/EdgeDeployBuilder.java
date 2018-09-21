@@ -22,7 +22,7 @@ import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
 import com.microsoft.jenkins.iotedge.model.DockerCredential;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
-import com.microsoft.jenkins.iotedge.util.Env;
+import com.microsoft.jenkins.iotedge.util.Util;
 import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
@@ -42,7 +42,6 @@ import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-import retrofit2.http.Query;
 
 import javax.servlet.ServletException;
 import javax.ws.rs.POST;
@@ -53,8 +52,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EdgeDeployBuilder extends BaseBuilder {
 
@@ -144,7 +141,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
             // Modify deployment.json structure
             InputStream stream = new FileInputStream(deploymentJsonPath);
-            JSONObject deploymentJson = new JSONObject(IOUtils.toString(stream, "UTF-8"));
+            JSONObject deploymentJson = new JSONObject(IOUtils.toString(stream, Constants.CHARSET_UTF_8));
             stream.close();
 
             // Get docker credential from temp file
@@ -157,7 +154,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
             } else {
                 listener.getLogger().println("No docker credential cache");
             }
-            credentialFile.delete();
+            boolean result = credentialFile.delete();
             if (credentialMap.size() != 0) {
                 JSONObject moduleContents = null;
                 if (deploymentJson.has("modulesContent")) {
@@ -208,7 +205,7 @@ public class EdgeDeployBuilder extends BaseBuilder {
 
             JSONObject newJson = new JSONObject();
             newJson.put("content", deploymentJson);
-            PrintWriter writer = new PrintWriter(deploymentJsonPath);
+            PrintWriter writer = new PrintWriter(deploymentJsonPath, Constants.CHARSET_UTF_8);
             writer.write(newJson.toString());
             writer.close();
 

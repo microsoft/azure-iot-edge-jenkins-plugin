@@ -42,7 +42,7 @@ public final class Constants {
     public static final String IOTEDGEDEV_ENV_REGISTRY_PASSWORD = "CONTAINER_REGISTRY_PASSWORD";
     public static final String IOTEDGEDEV_ENV_ACTIVE_MODULES = "BYPASS_MODULES";
 
-    public static Map<String, String> iotedgedevEnvMap;
+    public static final Map<String, String> iotedgedevEnvMap;
 
     static {
         iotedgedevEnvMap = new TreeMap<String, String>();
@@ -76,4 +76,5 @@ public final class Constants {
     public static final String TELEMETRY_VALUE_TASK_TYPE_DEPLOY = "Deploy";
 
     public static final int SAS_TOKEN_MINUTES = 5;
+    public static final String CHARSET_UTF_8 = "UTF-8";
 }

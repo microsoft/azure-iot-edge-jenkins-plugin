@@ -9,6 +9,7 @@ package com.microsoft.jenkins.iotedge;
 import com.microsoft.jenkins.iotedge.model.AzureCloudException;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.model.AzureCredentialsValidationException;
+import com.microsoft.jenkins.iotedge.util.Constants;
 import hudson.Launcher.ProcStarter;
 import hudson.Launcher;
 import hudson.Proc;
@@ -94,7 +95,7 @@ public class ShellExecuter {
             Proc p = launcher.launch(ps.cmdAsSingleString(command).envs(envVars).pwd(workspace).stdout(baos).quiet(!printCommand));
             String line = "";
             exitCode = p.join();
-            output = new String(baos.toByteArray(), "utf-8");
+            output = new String(baos.toByteArray(), Constants.CHARSET_UTF_8);
             if (listener != null && printCommand) listener.getLogger().println(output);
         } catch (IOException e) {
             e.printStackTrace();

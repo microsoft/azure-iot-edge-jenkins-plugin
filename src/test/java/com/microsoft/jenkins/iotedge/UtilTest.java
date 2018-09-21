@@ -1,5 +1,6 @@
 package com.microsoft.jenkins.iotedge;
 
+import com.microsoft.jenkins.iotedge.util.Util;
 import org.junit.Assert;
 import org.junit.Test;
 

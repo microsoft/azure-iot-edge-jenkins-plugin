@@ -13,31 +13,23 @@ import com.microsoft.azure.management.resources.GenericResource;
 import com.microsoft.azure.management.resources.ResourceGroup;
 import com.microsoft.azure.util.AzureBaseCredentials;
 import com.microsoft.azure.util.AzureCredentials;
-import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClient;
-import com.microsoft.jenkins.azurecommons.telemetry.AppInsightsClientFactory;
-import com.microsoft.jenkins.iotedge.model.AzureCredentialCache;
 import com.microsoft.jenkins.iotedge.util.AzureUtils;
 import com.microsoft.jenkins.iotedge.util.Constants;
 import com.microsoft.jenkins.iotedge.util.Env;
+import com.microsoft.jenkins.iotedge.util.Util;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.security.ACL;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
 
-import javax.servlet.ServletException;
-import javax.ws.rs.POST;
 import java.io.*;
-import java.net.URLEncoder;
 
 public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     public String getAzureCredentialsId() {
@@ -87,16 +79,16 @@ public abstract class BaseBuilder extends Builder implements SimpleBuildStep {
     protected void writeEnvFile(String path, String url, String bypassModules) {
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(path, "UTF-8");
+            writer = new PrintWriter(path, Constants.CHARSET_UTF_8);
+            writer.println(Env.EnvString);
+            writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
+            writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
+            writer.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        writer.println(Env.EnvString);
-        writer.println(Constants.IOTEDGEDEV_ENV_REGISTRY_SERVER + "=\"" + url + "\"");
-        writer.println(Constants.IOTEDGEDEV_ENV_ACTIVE_MODULES + "=\"" + bypassModules + "\"");
-        writer.close();
     }
 
     @Override

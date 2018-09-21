@@ -1,6 +1,7 @@
-package com.microsoft.jenkins.iotedge;
+package com.microsoft.jenkins.iotedge.util;
 
 import com.microsoft.applicationinsights.core.dependencies.apachecommons.codec.binary.Base64;
+import com.microsoft.jenkins.iotedge.util.Constants;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -36,7 +37,7 @@ public class Util {
 
     public static String getSharedAccessToken(String resourceUri, String signingKey, String policyName, int expiresInMins) {
         try {
-            resourceUri = URLEncoder.encode(resourceUri, "utf-8");
+            resourceUri = URLEncoder.encode(resourceUri, Constants.CHARSET_UTF_8);
             // Set expiration in seconds
             long expires = (System.currentTimeMillis() / 1000) + expiresInMins * 60;
 
@@ -47,7 +48,7 @@ public class Util {
 
             // Construct autorization string
             String token = "SharedAccessSignature sr=" + resourceUri + "&sig="
-                    + URLEncoder.encode(Base64.encodeBase64String(base64UriEncoded), "utf-8") + "&se=" + expires;
+                    + URLEncoder.encode(Base64.encodeBase64String(base64UriEncoded), Constants.CHARSET_UTF_8) + "&se=" + expires;
             if (policyName!=null) token += "&skn="+policyName;
             return token;
         } catch (UnsupportedEncodingException e) {
@@ -63,7 +64,7 @@ public class Util {
             Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
             SecretKeySpec secret_key = new SecretKeySpec(secret, "HmacSHA256");
             sha256_HMAC.init(secret_key);
-            bytes = sha256_HMAC.doFinal(message.getBytes());
+            bytes = sha256_HMAC.doFinal(message.getBytes(Constants.CHARSET_UTF_8));
         } catch (Exception e) {
             System.out.println("Error HmacSHA256 ===========" + e.getMessage());
         }
@@ -72,7 +73,7 @@ public class Util {
 
     public static String encodeURIComponent(String str) {
         try {
-            String encode = URLEncoder.encode(str, "utf-8");
+            String encode = URLEncoder.encode(str, Constants.CHARSET_UTF_8);
             encode = encode.replace("+", "%20")
                     .replace("%7E", "~")
                     .replace("%27", "'")
@@ -104,7 +105,7 @@ public class Util {
             }
 
             connection.setRequestProperty("Content-Length",
-                    Integer.toString(urlParameters.getBytes().length));
+                    Integer.toString(urlParameters.getBytes(Constants.CHARSET_UTF_8).length));
 
             connection.setUseCaches(false);
             connection.setDoOutput(true);
@@ -117,7 +118,7 @@ public class Util {
 
             //Get Response
             InputStream is = connection.getInputStream();
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Constants.CHARSET_UTF_8));
             StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
             String line;
             while ((line = rd.readLine()) != null) {
