@@ -16,7 +16,7 @@ This is the work flow for Azure IoT Edge solution CI/CD pipeline.
 ## How to Install
 
 ### Prerequisites
-Install following tools on Jenkins host. (If your Jenkins host is Windows, then the docker container needs to be Linux container)
+Install following tools on Jenkins host.
   * [Docker](https://docs.docker.com/install/)
   * [Azure CLI](https://docs.microsoft.com/en-US/cli/azure/install-azure-cli)
   * [Azure CLI IoT Extension](https://github.com/Azure/azure-iot-cli-extension#quick-guide)
