@@ -130,6 +130,9 @@ public class EdgeDeployBuilder extends BaseBuilder {
     }
 
     @Override
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+            value="DLS_DEAD_LOCAL_STORE",
+            justification="Don't need use the result from delete file")
     public void perform(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException, IOException {
         try {
             // Get deployment.json using iotedgedev

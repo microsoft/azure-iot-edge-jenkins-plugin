@@ -11,6 +11,9 @@ import com.microsoft.rest.LogLevel;
 import java.util.Map;
 import java.util.TreeMap;
 
+@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+        value="MS_MUTABLE_COLLECTION_PKGPROTECT",
+        justification="Need to initialize iotedgedevEnvMap")
 public final class Constants {
 
     private Constants() {
@@ -43,6 +46,7 @@ public final class Constants {
     public static final String IOTEDGEDEV_ENV_ACTIVE_MODULES = "BYPASS_MODULES";
 
     public static final Map<String, String> iotedgedevEnvMap;
+
 
     static {
         iotedgedevEnvMap = new TreeMap<String, String>();
