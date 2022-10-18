@@ -21,7 +21,7 @@
           ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
           ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
      -->
-        <jackson.version>2.7.0</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <guava.version>19.0</guava.version>
         <powermock.version>1.7.0RC2</powermock.version>
         <azuresdk.version>1.13.0</azuresdk.version>
