@@ -28,7 +28,7 @@
         <azure-credentials.version>1.6.0</azure-credentials.version>
         <azure-commons.version>0.2.6</azure-commons.version>
         <version.docker-java>3.0.10</version.docker-java>
-        <version.jenkins.docker-commons>1.4.0</version.jenkins.docker-commons>
+        <version.jenkins.docker-commons>1.18</version.jenkins.docker-commons>
     </properties>
 
     <name>Azure IoT Edge Plugin</name>
